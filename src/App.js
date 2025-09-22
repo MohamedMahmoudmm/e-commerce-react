@@ -1,23 +1,23 @@
 import logo from './logo.svg';
 import './App.css';
+import NavBar from './component/navbar/navbar';
+import HeroSection from './component/hero/hero';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import BestSeller from './component/bestSeller/bestseller';
+import ExperienceSection from './component/section-exp/secionExp';
+import ExploreByCategory from './component/categorySection/cat-section';
+
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    
+    <NavBar/>
+    <HeroSection/>
+    <BestSeller/>
+    <ExperienceSection/>
+    {/*<ExploreByCategory/> */}
     </div>
   );
 }
