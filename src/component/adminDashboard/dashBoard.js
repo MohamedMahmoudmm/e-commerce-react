@@ -8,6 +8,7 @@ import {
   CardContent,
   LinearProgress,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   return (
@@ -18,15 +19,15 @@ const Dashboard = () => {
       </Typography>
 
       {/* Top Summary Cards */}
-      <Grid container spacing={3} alignItems="stretch" justifyContent={"center"} sx={{ mb: 5 }}>
+      <Grid container spacing={1} alignItems="stretch" justifyContent={"space-around"} sx={{ mb: 5 }}>
   {[
-    { label: "All Products", value: "19", color: "#f44336" },
+    { label: "All Products", value: "19", color: "#f44336",route:"/adminAllProduct" },
     { label: "All Orders", value: "7", color: "#fb8c00" },
     { label: "All Users", value: "6 user", color: "#26a69a" },
     { label: "Add Product", value: "", color: "#1e3a8a" },
   ].map((item, index) => (
-    <Grid item xs={12} sm={6} md={3} key={index}>
-      <Card
+    <Grid item xs={12} sm={6} md={3} key={index}  >
+      <Card component={Link} to={item.route??""}
         sx={{
           bgcolor: item.color,
           color: "white",
@@ -36,6 +37,7 @@ const Dashboard = () => {
           alignItems: "center",
           justifyContent: "center",
           textAlign: "center",
+          
         }}
       >
         <CardContent sx={{ width: "100%" }}>
@@ -77,7 +79,8 @@ const Dashboard = () => {
           value={0}
           sx={{ height: 6, borderRadius: 3, mb: 2 }}
         />
-        <Button variant="outlined" size="small">
+        <Button variant="outlined" size="small" component={Link}
+  to="/pendingOrders">
           View All
         </Button>
       </Card>
@@ -104,7 +107,8 @@ const Dashboard = () => {
             },
           }}
         />
-        <Button variant="outlined" size="small" color="success">
+        <Button variant="outlined" size="small" color="success" component={Link}
+  to="/acceptedOrders">
           View All
         </Button>
       </Card>
@@ -131,7 +135,8 @@ const Dashboard = () => {
             },
           }}
         />
-        <Button variant="outlined" size="small" color="error">
+        <Button variant="outlined" size="small" color="error" component={Link}
+  to="/canceledOrders">
           View All
         </Button>
       </Card>
