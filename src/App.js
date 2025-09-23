@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import NavBar from './component/navbar/navbar';
 import "slick-carousel/slick/slick.css";
@@ -8,6 +7,7 @@ import ProductDetailsPage from './component/productDetails/details';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from './component/homePage';
 import Dashboard from './component/adminDashboard/dashBoard';
+import WishListPage from './component/WishList/WishList';
 
 
 function App() {
@@ -21,6 +21,8 @@ function App() {
         <Route path="/home" element={<HomePage />} />
         <Route path="/dash" element={<Dashboard />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
+        <Route path="/wishlist" element={<WishListPage />} />
+
       </Routes>
       
       
