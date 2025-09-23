@@ -15,6 +15,7 @@ import PendingOrder from './component/adminallorders/pendingOrder';
 import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 
 
+
 function App() {
   return (
     <div className="App">
@@ -35,10 +36,7 @@ function App() {
       
       
       </BrowserRouter>
-    
-   
-    {/* <ProductDetailsPage/> */}
-   
+
     </div>
   );
 }
