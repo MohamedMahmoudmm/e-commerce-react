@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import BestSeller from './component/bestSeller/bestseller';
 import ExperienceSection from './component/section-exp/secionExp';
 import ExploreByCategory from './component/categorySection/cat-section';
+import ProductDetailsPage from './component/productDetails/details';
 
 
 function App() {
@@ -14,9 +15,10 @@ function App() {
     <div className="App">
     
     <NavBar/>
-    <HeroSection/>
-    <BestSeller/>
-    <ExperienceSection/>
+    <ProductDetailsPage/>
+    {/* <HeroSection/> */}
+    {/* <BestSeller/> */}
+    {/* <ExperienceSection/> */}
     {/*<ExploreByCategory/> */}
     </div>
   );
