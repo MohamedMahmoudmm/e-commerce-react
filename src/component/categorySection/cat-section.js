@@ -1,117 +1,153 @@
-import * as React from 'react';
+import React from "react";
 import {
-  Container,
-  Grid,
-  Typography,
-  Paper,
   Box,
-  InputBase,
-  List,
-  ListItemButton,
-  ListItemText,
-  Card,
-  CardMedia,
-  CardContent,
+  Typography,
   Button,
-  IconButton
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+  TextField,
+  List,
+  ListItem,
+} from "@mui/material";
 
 const categories = [
-  'Bedroom',
-  'Dining Room',
-  'Meeting Room',
-  'Workspace',
-  'Living Room',
-  'Kitchen',
-  'Living Space',
+  { title: "Bedroom", img: "https://i.ibb.co/3hq6yPm/bedroom.jpg" },
+  { title: "Living Room", img: "https://i.ibb.co/qJvQZV9/livingroom.jpg" },
+  { title: "Workspace", img: "https://i.ibb.co/qydh0Wz/workspace.jpg" },
+  { title: "Meeting Room", img: "https://i.ibb.co/MZ3WDXd/meetingroom.jpg" },
+  { title: "Kitchen", img: "https://i.ibb.co/sV3p6t1/kitchen.jpg" },
+  { title: "Living Space", img: "https://i.ibb.co/pnN6SkP/livingspace.jpg" },
 ];
 
-const rooms = [
-  { name: 'Bedroom', image: '/path/to/bedroom_image.jpg' },
-  { name: 'Living Room', image: '/path/to/living_room_image.jpg' },
-  // ... more room data
-];
-
-const ExploreByCategory = () => {
+export default function ExploreByCategory() {
   return (
-    <Container sx={{ py: 5 }}>
-      <Typography variant="h4" gutterBottom align="center" color="primary" sx={{ mb: 4 }}>
+    <Box sx={{ px: { xs: 2, md: 8 }, py: 8 }}>
+      {/* Title */}
+      <Typography
+        variant="h4"
+        align="center"
+        fontWeight="bold"
+        sx={{ mb: 5, color: "black" }}
+      >
         Explore by Category
       </Typography>
 
-      <Grid container spacing={4}>
+      {/* Sidebar + Images side by side */}
+      <Box sx={{ display: "flex", gap: 4 }}>
         {/* Sidebar */}
-        <Grid item xs={12} md={3}>
-          <Paper elevation={0} sx={{ p: 2, height: '100%', border: '1px solid #ccc' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <IconButton disabled>
-                <SearchIcon />
-              </IconButton>
-              <InputBase
-                placeholder="Search..."
-                fullWidth
-                sx={{ ml: 1 }}
-              />
-            </Box>
-            <List>
-              {categories.map((category) => (
-                <ListItemButton key={category}>
-                  <ListItemText primary={category} />
-                </ListItemButton>
-              ))}
-            </List>
-            <Button
-              variant="contained"
-              fullWidth
-              sx={{ mt: 3 }}
-              endIcon={<ArrowForwardIcon />}
-            >
-              All Categories
-            </Button>
-          </Paper>
-        </Grid>
-
-        {/* Main Content (Image Gallery) */}
-        <Grid item xs={12} md={9}>
-          <Grid container spacing={3}>
-            {rooms.map((room) => (
-              <Grid item xs={12} sm={6} key={room.name}>
-                <Card sx={{ position: 'relative', height: '100%', minHeight: 250 }}>
-                  <CardMedia
-                    component="img"
-                    image={room.image}
-                    alt={room.name}
-                    sx={{ height: '100%' }}
-                  />
-                  {room.name === 'Bedroom' && (
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        textAlign: 'center',
-                        color: 'white',
-                      }}
-                    >
-                      <Typography variant="h5" fontWeight="bold">
-                        {room.name}
-                      </Typography>
-                      <Button variant="contained" sx={{ mt: 1 }}>
-                        Explore
-                      </Button>
-                    </Box>
-                  )}
-                </Card>
-              </Grid>
+        <Box sx={{ flex: "0 0 250px" }}>
+          <TextField
+            fullWidth
+            placeholder="Search"
+            variant="outlined"
+            sx={{
+              mb: 3,
+              borderRadius: "12px",
+              bgcolor: "white",
+              boxShadow: "0px 4px 20px rgba(0,0,0,0.05)",
+            }}
+          />
+          <List>
+            {categories.map((cat, i) => (
+              <ListItem
+                key={i}
+                sx={{
+                  py: 1,
+                  cursor: "pointer",
+                  "&:hover": { color: "#ff7b00", fontWeight: "bold" },
+                }}
+              >
+                {cat.title}
+              </ListItem>
             ))}
-          </Grid>
-        </Grid>
-      </Grid>
-    </Container>
-  );
-};
+          </List>
+          <Button
+            variant="contained"
+            sx={{
+              mt: 3,
+              bgcolor: "#ff7b00",
+              borderRadius: "12px",
+              textTransform: "none",
+              "&:hover": { bgcolor: "darkslategray" },
+            }}
+          >
+            All Categories →
+          </Button>
+        </Box>
 
-export default ExploreByCategory;
+        {/* Images grid */}
+        <Box
+          sx={{
+            flex: 1,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gap: 3,
+          }}
+        >
+          {categories.map((cat, i) => (
+            <Box
+              key={i}
+              sx={{
+                position: "relative",
+                borderRadius: "16px",
+                overflow: "hidden",
+                cursor: "pointer",
+                height: 200,
+                "&:hover .overlay": {
+                  opacity: 1,
+                },
+              }}
+            >
+              {/* Image */}
+              <Box
+                component="img"
+                src={cat.img}
+                alt={cat.title}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  borderRadius: "16px",
+                }}
+              />
+
+              {/* Overlay (hover effect) */}
+              <Box
+                className="overlay"
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  width: "100%",
+                  height: "100%",
+                  bgcolor: "rgba(0,0,0,0.5)",
+                  color: "white",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  opacity: 0,
+                  transition: "opacity 0.3s ease",
+                }}
+              >
+                <Typography variant="h6" sx={{ mb: 1 }}>
+                  {cat.title}
+                </Typography>
+                <Button
+                  variant="contained"
+                  sx={{
+                    bgcolor: "white",
+                    color: "teal",
+                    borderRadius: "8px",
+                    textTransform: "none",
+                    "&:hover": { bgcolor: "teal", color: "white" },
+                  }}
+                >
+                  Explore
+                </Button>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    </Box>
+  );
+}

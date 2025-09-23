@@ -1,25 +1,34 @@
 import logo from './logo.svg';
 import './App.css';
 import NavBar from './component/navbar/navbar';
-import HeroSection from './component/hero/hero';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import BestSeller from './component/bestSeller/bestseller';
-import ExperienceSection from './component/section-exp/secionExp';
-import ExploreByCategory from './component/categorySection/cat-section';
+
 import ProductDetailsPage from './component/productDetails/details';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import HomePage from './component/homePage';
+import Dashboard from './component/adminDashboard/dashBoard';
 
 
 function App() {
   return (
     <div className="App">
+      <BrowserRouter>
+      
+       <NavBar/>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/dash" element={<Dashboard />} />
+        <Route path="/product/:id" element={<ProductDetailsPage />} />
+      </Routes>
+      
+      
+      </BrowserRouter>
     
-    <NavBar/>
-    <ProductDetailsPage/>
-    {/* <HeroSection/> */}
-    {/* <BestSeller/> */}
-    {/* <ExperienceSection/> */}
-    {/*<ExploreByCategory/> */}
+   
+    {/* <ProductDetailsPage/> */}
+   
     </div>
   );
 }
