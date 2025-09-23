@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  IconButton, Grid,
   Box,
   Typography,
   Card,
@@ -7,8 +8,12 @@ import {
   CardContent,
   Button,
   TextField,
+  Paper,
+  InputBase,
   Rating,
 } from "@mui/material";
+import AddToCart from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 
 // Styled components
@@ -21,34 +26,6 @@ const StyledCard = styled(Card)(({ theme }) => ({
   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
 }));
 
-const ProductCard = ({ image, title, price, rating, brand }) => (
-  <StyledCard
-    sx={{
-      width: { xs: "100%", sm: "45%", md: "200px" }, // full width on mobile, 2 in a row on tablets, fixed on desktop
-      margin: { xs: "10px 0", sm: "10px" },
-      position: "relative",
-    }}
-  >
-    <CardMedia component="img" height="140" image={image} alt={title} />
-    <CardContent>
-      <Typography variant="body2" color="#ff7b00">
-        {title}
-      </Typography>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Rating value={rating} readOnly size="small" />
-        <Typography variant="caption" color="#ff7b00" sx={{ ml: 1 }}>
-          By {brand}
-        </Typography>
-      </Box>
-      <Typography variant="h6" sx={{ mt: 1 }}>
-        ${price}
-      </Typography>
-      <Button variant="contained" color="success" sx={{ mt: 1 }}>
-        Add
-      </Button>
-    </CardContent>
-  </StyledCard>
-);
 
 const Sidebar = () => (
   <Box
@@ -107,6 +84,13 @@ const Sidebar = () => (
 );
 
 const IlanaGrocery = () => {
+  const products = [
+    { id: 1, name: "Sakarias Armchair", category: "Chair", price: 392, rating: 4, image: "./chair.png", }
+    , { id: 2, name: "Baltsar Chair", category: "Chair", price: 299, rating: 5, image: "./chair2.png", }
+    , { id: 3, name: "Anjay Chair", category: "Chair", price: 519, rating: 4, image: "./chair.png", }
+    , { id: 4, name: "Nyantuy Chair", category: "Chair", price: 921, rating: 5, image: "./chair2.png", }
+    , { id: 5, name: "Another Chair", category: "Chair", price: 650, rating: 4, image: "./chair.png", }
+    ,];
   return (
     <Box
       sx={{
@@ -122,6 +106,7 @@ const IlanaGrocery = () => {
           backgroundColor: "#f9e7c3",
           padding: 4,
           textAlign: "center",
+          justifyItems: "center",
           borderRadius: 8,
           mb: 4,
         }}
@@ -132,94 +117,67 @@ const IlanaGrocery = () => {
         <Typography variant="h6" color="#ff7b00" gutterBottom>
           Subscribe to Our Newsletter
         </Typography>
-        <Box
+      <Paper
+          component="form"
           sx={{
+            p: "2px 4px",
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" },
-            justifyContent: "center",
             alignItems: "center",
-            mt: 2,
+            width: 400,
+              borderRadius: "30px",
+              bgcolor: "rgba(255,255,255,0.2)", // semi-transparent white
+              border: "1px solid rgba(255,255,255,0.3)",
+              transition: "transform 0.3s ease", // smooth animation
+              "&:hover": {
+                  transform: "scale(1.05)",       // enlarge by 5% on hover
+                  boxShadow: 4,                   // add some elevation on hover
+              },
           }}
         >
-          <TextField
-            variant="outlined"
-            placeholder="Your Email"
-            sx={{ mr: { sm: 2 }, mb: { xs: 2, sm: 0 }, width: { xs: "100%", sm: "300px" } }}
+          <InputBase
+            sx={{ ml: 3, flex: 1 ,color:"black"}}
+            placeholder="Search"
+            inputProps={{ "aria-label": "search furniture" }}
           />
-          <Button variant="contained" color="success">
-            Subscribe
-          </Button>
-        </Box>
+          <IconButton type="submit" sx={{ p: "8px", bgcolor: "#ff7b00", color: "white", borderRadius: "50%" }}>
+            <SearchIcon />
+          </IconButton>
+        </Paper>
       </Box>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}><Sidebar />
 
       {/* Main Content */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          flexGrow: 1,
-        }}
-      >
-        {/* Sidebar */}
-        <Box sx={{ mr: { md: 2 }, mt: 2 }}>
-          <Sidebar />
-        </Box>
+      <Box sx={{ p: { xs: 2, sm: 3 } }} justifyContent="center">
+        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center" >
+          Best Selling Product </Typography>
+        <Grid container spacing={2} justifyContent="center" sx={{ px: { xs: 0, sm: 4, md: 6 } }} >
+          {products.map((product) => (
+            <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
+              <Card sx={{ borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.10)", height: "100%", }} >
+                <Box sx={{ display: "flex", justifyContent: "center" }}>
+                  <CardMedia component="img" image={product.image} alt={product.name}
+                    sx={{ height: 200, objectFit: "contain", p: 2, bgcolor: "#F7F7F7", }} />
+                </Box>
+                <CardContent sx={{ textAlign: "left" }}>
+                  <Typography variant="body2" color="text.secondary"> {product.category}
+                  </Typography> <Typography variant="subtitle1" fontWeight="bold"> {product.name}
+                  </Typography>
+                  <Rating value={product.rating} readOnly size="small" sx={{ mt: 1, mb: 1 }} />
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 1, }} >
+                    <Typography variant="h6" fontWeight="bold"> ${product.price}
 
-        {/* Products */}
-        <Box sx={{ flexGrow: 1, mt: 2 }}>
-          <Typography variant="h5" color="primary" gutterBottom>
-            Popular Products
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: { xs: "center", md: "flex-start" },
-              mt: 2,
-              flexWrap: "wrap",
-              gap: 2,
-            }}
-          >
-            <ProductCard
-              image="https://via.placeholder.com/150"
-              title="Organic Quinoa"
-              price="28.85"
-              rating={4.0}
-              brand="NestFood"
-            />
-            <ProductCard
-              image="https://via.placeholder.com/150"
-              title="Italian Meatballs"
-              price="52.85"
-              rating={3.5}
-              brand="Stouffer"
-            />
-            <ProductCard
-              image="https://via.placeholder.com/150"
-              title="Sweet & Salty Popcorn"
-              price="48.85"
-              rating={4.0}
-              brand="StarKist"
-            />
-            <ProductCard
-              image="https://via.placeholder.com/150"
-              title="Crispy Chicken"
-              price="17.85"
-              rating={4.0}
-              brand="NestFood"
-            />
-            <ProductCard
-              image="https://via.placeholder.com/150"
-              title="Almonds Lightly"
-              price="23.85"
-              rating={4.0}
-              brand="NestFood"
-            />
-          </Box>
-          <Typography variant="h5" color="primary" sx={{ mt: 4 }}>
-            New Products
-          </Typography>
-        </Box>
+                    </Typography>
+                    <IconButton sx={{ bgcolor: "#001f54", color: "white", "&:hover": { bgcolor: "#003080" }, }} >
+                      <AddToCart />
+                    </IconButton>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>))}
+        </Grid>
       </Box>
+        </Box>
+      
     </Box>
   );
 };

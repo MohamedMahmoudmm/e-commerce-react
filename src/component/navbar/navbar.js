@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Link } from "react-router-dom";
 
 export default function NavBar() {
   return (
@@ -31,6 +32,8 @@ export default function NavBar() {
             <Box sx={{ display: "flex", gap: 4}}>
               {["Furniture", "Shop", "About Us", "Contact"].map((item) => (
                 <Button
+                component={Link}
+                to={`/${item.toLowerCase()}`}
                   key={item}
                   sx={{ color: "white", fontWeight: 500, textTransform: "none",
                     transition: "transform 0.3s ease", // smooth animation
