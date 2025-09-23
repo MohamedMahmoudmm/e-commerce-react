@@ -199,14 +199,30 @@ const WishlistPage = () => {
   ];
 
   return (
-    <Paper elevation={0} sx={{ minHeight: "100vh", py: 4, bgcolor: "grey.50" }}>
+    <>
+<Box 
+  textAlign="center" 
+  bgcolor="#000000ff" // Black background for the navbar
+  sx={{ 
+    paddingTop: '70px',
+    borderRadius: '0 0 30px 30px' // Optional: padding above to align with navbar
+  }}
+>
+  <Typography 
+    variant="h3" 
+    fontWeight="bold" 
+    gutterBottom 
+    color="primary.dark" // Text color
+    sx={{ paddingBottom: '20px' }}
+  >
+    My Wishlist
+  </Typography>
+</Box>
+    <Paper elevation={0} sx={{ minHeight: "100vh", py: 4,pt:10,   background: ", #ffffffff 100%)" }}>
       <Container maxWidth="xl">
         {/* Header */}
-        <Box textAlign="center" mb={6}>
-          <Typography variant="h3" fontWeight="bold" gutterBottom>
-            My Wishlist
-          </Typography>
-          <Typography variant="h6" color="text.secondary">
+           <Box textAlign="center" mb={3}>
+          <Typography variant="h6" color='#2c2c2cff'>
             Your favorite items all in one place
           </Typography>
         </Box>
@@ -337,6 +353,7 @@ const WishlistPage = () => {
         </Box>
       </Container>
     </Paper>
+    </>
   );
 };
 export default WishlistPage;
