@@ -3,32 +3,21 @@ import './App.css';
 import NavBar from './component/navbar/navbar';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-import ProductDetailsPage from './component/productDetails/details';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import HomePage from './component/homePage';
-import Dashboard from './component/adminDashboard/dashBoard';
-
+import BestSeller from './component/bestSeller/bestseller';
+import ExperienceSection from './component/section-exp/secionExp';
+import ExploreByCategory from './component/categorySection/cat-section';
+import ProductCard from './component/shop/shop';
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-      
-       <NavBar/>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/dash" element={<Dashboard />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
-      </Routes>
-      
-      
-      </BrowserRouter>
     
-   
-    {/* <ProductDetailsPage/> */}
-   
+    {/* <NavBar/>
+    <HeroSection/>
+    <BestSeller/>
+    <ExperienceSection/> */}
+    {/*<ExploreByCategory/> */}
+    <ProductCard/>
     </div>
   );
 }
