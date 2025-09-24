@@ -8,6 +8,7 @@ import {
   IconButton,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link } from "react-router-dom";
 
 export default function NavBar() {
@@ -50,9 +51,16 @@ export default function NavBar() {
             </Box>
 
             {/* Cart */}
-            <IconButton color="inherit">
+            <Box> 
+              <IconButton color="inherit" component={Link} to="/wishlist">
+              <FavoriteIcon />
+            </IconButton>
+               <IconButton color="inherit">
               <ShoppingCartIcon />
             </IconButton>
+           
+            </Box>
+           
           </Toolbar>
         </Container>
       </AppBar>     
