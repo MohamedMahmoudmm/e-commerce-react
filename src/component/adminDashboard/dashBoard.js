@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Typography,
@@ -9,8 +8,31 @@ import {
   LinearProgress,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios, { all } from "axios";
 
 const Dashboard = () => {
+//getAllProduct
+//getAllOrders
+const [allProduct, setAllProduct] = useState([]);
+const [allorders, setAllOrders] = useState([]);
+
+  useEffect(() => {
+    axios.get("http://127.0.0.1:3000/api/products",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
+      console.log(res.data)
+      setAllProduct(res.data.products)
+    })
+  }, []);
+  useEffect(() => {
+    axios.get("http://127.0.0.1:3000/orders",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
+      console.log(res.data)
+      setAllOrders(res.data.data)
+    })
+  }, []);
+
+
+
+
   return (
     <Box sx={{ p: 4, bgcolor: "#f6f8fb", minHeight: "100vh" }}>
       {/* Title */}
@@ -21,8 +43,8 @@ const Dashboard = () => {
       {/* Top Summary Cards */}
       <Grid container spacing={1} alignItems="stretch" justifyContent={"space-around"} sx={{ mb: 5 }}>
   {[
-    { label: "All Products", value: "19", color: "#f44336",route:"/adminAllProduct" },
-    { label: "All Orders", value: "7", color: "#fb8c00" },
+    { label: "All Products", value: allProduct.length, color: "#f44336",route:"/adminAllProduct" },
+    { label: "All Orders", value: allorders.length, color: "#fb8c00",route:"/orders" },
     { label: "All Users", value: "6 user", color: "#26a69a" },
     { label: "Add Product", value: "", color: "#1e3a8a" },
   ].map((item, index) => (

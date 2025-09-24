@@ -7,13 +7,13 @@ import ProductDetailsPage from './component/productDetails/details';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from './component/homePage';
 import Dashboard from './component/adminDashboard/dashBoard';
-import WishListPage from './component/WishList/WishList';
 import OrdersList from './component/adminallorders/allorders';
 import AcceptOrder from './component/adminallorders/acceptedOrder';
 import CanceledOrder from './component/adminallorders/cancelledOrder';
 import PendingOrder from './component/adminallorders/pendingOrder';
 import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 import IlanaGrocery from './component/shop/shop';
+import WishlistPage from './component/wishlist/WishList'
 
 
 
@@ -34,7 +34,7 @@ function App() {
         <Route path="/pendingOrders" element={<PendingOrder/>} />
         <Route path="/canceledOrders" element={<CanceledOrder />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
-        <Route path="/wishlist" element={<WishListPage />} />
+        <Route path="/wishlist" element={<WishlistPage />} />
 
       </Routes>
       

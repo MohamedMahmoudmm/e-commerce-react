@@ -202,17 +202,17 @@ const WishlistPage = () => {
     <>
 <Box 
   textAlign="center" 
-  bgcolor="#000000ff" // Black background for the navbar
   sx={{ 
-    paddingTop: '70px',
-    borderRadius: '0 0 30px 30px' // Optional: padding above to align with navbar
+      backgroundColor:"#051a3dff",
+      paddingTop: '80px',
+      borderRadius: "0px 0px 25px 25px",
   }}
 >
   <Typography 
     variant="h3" 
     fontWeight="bold" 
     gutterBottom 
-    color="primary.dark" // Text color
+    color="white" // Text color
     sx={{ paddingBottom: '20px' }}
   >
     My Wishlist
@@ -326,7 +326,7 @@ const WishlistPage = () => {
                     <Box>
                       <IconButton
                         sx={{
-                          bgcolor: "primary.main",
+                          bgcolor: "#051a3dff",
                           color: "white",
                           "&:hover": { bgcolor: "primary.dark" },
                         }}
