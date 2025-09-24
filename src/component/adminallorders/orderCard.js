@@ -9,7 +9,9 @@ import {
   Button,
   Collapse,
 } from "@mui/material";
+import axios from "axios";
 import { useState } from "react";
+import { axiosInstance } from "../../Axios/AxiosInstance";
 function OrderCard({order}){
 
 
@@ -19,7 +21,9 @@ function OrderCard({order}){
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
   const AcceptOrder = (orderId) => {
-      
+      axiosInstance.put(`orders/${orderId}`,{status:"processing"}).then((res)=>{
+        
+      })
   }
     const statusColors = {
   accepted: "success",
