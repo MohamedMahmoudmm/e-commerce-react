@@ -7,7 +7,6 @@ import ProductDetailsPage from './component/productDetails/details';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from './component/homePage';
 import Dashboard from './component/adminDashboard/dashBoard';
-import WishListPage from './component/WishList/WishList';
 import OrdersList from './component/adminallorders/allorders';
 import AcceptOrder from './component/adminallorders/acceptedOrder';
 import CanceledOrder from './component/adminallorders/cancelledOrder';
@@ -16,6 +15,8 @@ import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 import IlanaGrocery from './component/shop/shop';
 import Login from './component/Login/Login';
 import Register from './component/Register/Register';
+import WishlistPage from './component/wishList/WishList'
+import ShoppingCart from './component/cart/cart';
 
 
 
@@ -39,7 +40,8 @@ function App() {
         <Route path="/wishlist" element={<WishListPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-
+        <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/cart" element={<ShoppingCart/>} />
       </Routes>
       
       

@@ -27,7 +27,7 @@ function OrderCard({order}){
   pending: "warning",
 };
     return(
-        <Grid item xs={12} key={order.id}>
+        <Grid item xs={12} key={order._id}>
             <Card
               sx={{
                 borderRadius: 3,
@@ -51,14 +51,14 @@ function OrderCard({order}){
                         fontWeight="bold"
                         color="primary"
                       >
-                        #{order.id}
+                        #{order._id}
                       </Typography>
                     </Typography>
                   </Grid>
 
                   <Grid item xs={12} md={3}>
                     <Typography variant="body2">
-                      Order Date: {order.date}
+                      Order Date: {order.createdAt}
                     </Typography>
                   </Grid>
 
@@ -73,7 +73,7 @@ function OrderCard({order}){
 
                   <Grid item xs={12} md={2}>
                     <Typography fontWeight="bold">
-                      Total: ${order.total}
+                      Total: ${order.totalPrice}
                     </Typography>
                   </Grid>
 
@@ -82,7 +82,7 @@ function OrderCard({order}){
                       variant="outlined"
                       color="success"
                       size="small"
-                      onClick={() => AcceptOrder(order.id)}
+                      onClick={() => AcceptOrder(order._id)}
                     >
                       accepte order
                     </Button>
@@ -92,17 +92,17 @@ function OrderCard({order}){
                         <Button
                             variant="outlined"
                             size="small"
-                            onClick={() => toggleExpand(order.id)}
+                            onClick={() => toggleExpand(order._id)}
                         >
-                            {expandedOrder === order.id ? "Hide Details" : "View Details"}
+                            {expandedOrder === order._id ? "Hide Details" : "View Details"}
                         </Button>
                     </Grid>
                 <Divider />
 
                 {/* Product List (collapsible) */}
-                <Collapse in={expandedOrder === order.id}>
+                <Collapse in={expandedOrder === order._id}>
                   <Box mt={2}>
-                    {order.products.map((product, index) => (
+                    {order.items.map((product, index) => (
                       <Grid
                         container
                         spacing={2}
@@ -112,25 +112,25 @@ function OrderCard({order}){
                           mb: 2,
                           pb: 2,
                           borderBottom:
-                            index !== order.products.length - 1
+                            index !== order.items.length - 1
                               ? "1px solid #eee"
                               : "none",
                         }}
                       >
                         <Grid item>
                           <img
-                            src={product.image}
-                            alt={product.name}
+                            src={product.productId.images[0]}
+                            alt={product.productId.name}
                             width={70}
                             style={{ borderRadius: 8 }}
                           />
                         </Grid>
                         <Grid item xs>
                           <Typography fontWeight="bold">
-                            {product.name}
+                            {product.productId.name}
                           </Typography>
                           <Typography variant="body2">
-                            Qty: {product.qty}
+                            Qty: {product.quantity}
                           </Typography>
                         </Grid>
                       </Grid>

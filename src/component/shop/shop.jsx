@@ -9,23 +9,15 @@ import {
   Button,
   TextField,
   Paper,
+  Container,
   InputBase,
   Rating,
 } from "@mui/material";
 import AddToCart from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
+import { ShoppingCart, Favorite } from "@mui/icons-material";
+
 import { styled } from "@mui/material/styles";
-
-// Styled components
-const StyledCard = styled(Card)(({ theme }) => ({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  padding: theme.spacing(2),
-  borderRadius: 8,
-  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-}));
-
 
 const Sidebar = () => (
   <Box
@@ -90,6 +82,7 @@ const IlanaGrocery = () => {
     , { id: 3, name: "Anjay Chair", category: "Chair", price: 519, rating: 4, image: "./chair.png", }
     , { id: 4, name: "Nyantuy Chair", category: "Chair", price: 921, rating: 5, image: "./chair2.png", }
     , { id: 5, name: "Another Chair", category: "Chair", price: 650, rating: 4, image: "./chair.png", }
+    , { id:6, name: "Another Chair", category: "Chair", price: 650, rating: 4, image: "./chair.png", }
     ,];
   return (
     <Box
@@ -103,20 +96,20 @@ const IlanaGrocery = () => {
       {/* Newsletter Section */}
       <Box
         sx={{
-          backgroundColor: "#f9e7c3",
+          // backgroundImage: "url('./search.jpg')",
+          // backgroundSize: "cover",
+          // backgroundRepeat: "no-repeat",
+          //backgroundPosition: "center",
+          backgroundColor:"#051a3dff",
           padding: 4,
           textAlign: "center",
           justifyItems: "center",
-          borderRadius: 8,
+          borderRadius: "0px 0px 25px 25px",
           mb: 4,
+          pt: 10,
         }}
       >
-        <Typography variant="h4" color="primary" gutterBottom>
-          Don't Miss Amazing Deals
-        </Typography>
-        <Typography variant="h6" color="#ff7b00" gutterBottom>
-          Subscribe to Our Newsletter
-        </Typography>
+      
       <Paper
           component="form"
           sx={{
@@ -135,7 +128,7 @@ const IlanaGrocery = () => {
           }}
         >
           <InputBase
-            sx={{ ml: 3, flex: 1 ,color:"black"}}
+            sx={{ ml: 3, flex: 1 ,color:"white"}}
             placeholder="Search"
             inputProps={{ "aria-label": "search furniture" }}
           />
@@ -144,38 +137,145 @@ const IlanaGrocery = () => {
           </IconButton>
         </Paper>
       </Box>
-      <Box sx={{ display: "flex", justifyContent: "space-between" }}><Sidebar />
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Sidebar />
 
       {/* Main Content */}
-      <Box sx={{ p: { xs: 2, sm: 3 } }} justifyContent="center">
-        <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center" >
-          Best Selling Product </Typography>
-        <Grid container spacing={2} justifyContent="center" sx={{ px: { xs: 0, sm: 4, md: 6 } }} >
-          {products.map((product) => (
-            <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-              <Card sx={{ borderRadius: "16px", boxShadow: "0 4px 20px rgba(0,0,0,0.10)", height: "100%", }} >
-                <Box sx={{ display: "flex", justifyContent: "center" }}>
-                  <CardMedia component="img" image={product.image} alt={product.name}
-                    sx={{ height: 200, objectFit: "contain", p: 2, bgcolor: "#F7F7F7", }} />
-                </Box>
-                <CardContent sx={{ textAlign: "left" }}>
-                  <Typography variant="body2" color="text.secondary"> {product.category}
-                  </Typography> <Typography variant="subtitle1" fontWeight="bold"> {product.name}
-                  </Typography>
-                  <Rating value={product.rating} readOnly size="small" sx={{ mt: 1, mb: 1 }} />
-                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mt: 1, }} >
-                    <Typography variant="h6" fontWeight="bold"> ${product.price}
+      <Paper elevation={0} sx={{ minHeight: "100vh", py: 4,pt:5,   background: ", #ffffffff 100%)" }}>
+      <Container maxWidth="xl">
+        {/* Header */}
+           <Box textAlign="center" mb={3}>
+          <Typography variant="h3" color='#2c2c2cff'>
+            find your best product
+          </Typography>
+        </Box>
+        <Grid container spacing={3} justifyContent="center">
+          {products.map((item) => (
+            <Grid
+              item
+              xs={12} 
+              sm={6} 
+              md={3} 
+              lg={2.4} 
+              xl={2} 
+              key={item.id}
+              display="flex"
+              justifyContent="center"
+            >
+              <Card
+                elevation={3}
+                sx={{
+                  width: "100%",
+                  maxWidth: {
+                    xs: "100%",
+                    sm: 300,
+                    md: 260,
+                    lg: 240,
+                    xl: 220,
+                  },
+                  transition: "all 0.3s",
+                  borderRadius: 3,
+                  "&:hover": {
+                    boxShadow: 6,
+                    transform: "translateY(-4px)",
+                  },
+                }}
+              >
+                <Box position="relative">
+                  <IconButton
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      right: 8,
+                      bgcolor: "white",
+                      "&:hover": { bgcolor: "grey.100" },
+                    }}
+                  >
+                    <Favorite />
+                  </IconButton>
 
+                  <CardMedia
+                    component="img"
+                    height="220"
+                    image={item.image}
+                    alt={item.name}
+                    sx={{
+                      objectFit: "contain",
+                      display: "block",
+                      mx: "auto",
+                    }}
+                  />
+                </Box>
+
+                <CardContent sx={{ p: { xs: 3, sm: 2 } }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    {item.category}
+                  </Typography>
+
+                  <Typography
+                    variant="h6"
+                    fontWeight="bold"
+                    gutterBottom
+                    fontSize={{ xs: 16, sm: 15 }}
+                  >
+                    {item.name}
+                  </Typography>
+
+                  <Box display="flex" alignItems="center" mb={2}>
+                    <Rating value={item.rating} readOnly size="small" />
+                    <Typography variant="body2" color="text.secondary" ml={1}>
+                      ({item.rating}.0)
                     </Typography>
-                    <IconButton sx={{ bgcolor: "#001f54", color: "white", "&:hover": { bgcolor: "#003080" }, }} >
-                      <AddToCart />
-                    </IconButton>
+                  </Box>
+
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      color="text.primary"
+                      fontSize={{ xs: 18, sm: 16 }}
+                    >
+                      ${item.price}
+                    </Typography>
+
+                    <Box>
+                      <IconButton
+                        sx={{
+                          bgcolor: "#051a3dff",
+                          color: "white",
+                          "&:hover": { bgcolor: "primary.dark" },
+                        }}
+                        size="small"
+                      >
+                        <ShoppingCart />
+                      </IconButton>
+                    </Box>
                   </Box>
                 </CardContent>
               </Card>
-            </Grid>))}
+            </Grid>
+          ))}
         </Grid>
-      </Box>
+
+        <Box textAlign="center" mt={6}>
+          <Button
+            variant="outlined"
+            size="large"
+            sx={{ width: { xs: "100%", sm: "auto" } }}
+          >
+            View All Products
+          </Button>
+        </Box>
+      </Container>
+    </Paper>
         </Box>
       
     </Box>

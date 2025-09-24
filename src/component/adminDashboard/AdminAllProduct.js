@@ -11,62 +11,31 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function AdminAllProduct() {
-  const initialProducts = [
-    {
-      id: 1,
-      name: "Sakarias Armchair",
-      category: "Chair",
-      price: 392,
-      rating: 4,
-      image: "./chair.png",
-    },
-    {
-      id: 2,
-      name: "Baltsar Chair",
-      category: "Chair",
-      price: 299,
-      rating: 5,
-      image: "./chair2.png",
-    },
-    {
-      id: 3,
-      name: "Anjay Chair",
-      category: "Chair",
-      price: 519,
-      rating: 4,
-      image: "./chair.png",
-    },
-    {
-      id: 4,
-      name: "Nyantuy Chair",
-      category: "Chair",
-      price: 921,
-      rating: 5,
-      image: "./chair2.png",
-    },
-    {
-      id: 5,
-      name: "Another Chair",
-      category: "Chair",
-      price: 650,
-      rating: 4,
-      image: "./chair.png",
-    },
-  ];
 
-  const [products, setProducts] = useState(initialProducts);
+ // const [allProduct, setAllProduct] = useState([]);
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+      axios.get("http://127.0.0.1:3000/api/products",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
+        console.log(res.data)
+        setProducts(res.data.products)
+      })
+    }, []);
+  
+
   const [editId, setEditId] = useState(null); // track which product is being edited
   const [editValues, setEditValues] = useState({ name: "", price: "" });
 
   const handleEditClick = (product) => {
-    if (editId === product.id) {
+    if (editId === product._id) {
       // Save mode
       setProducts((prev) =>
         prev.map((p) =>
-          p.id === product.id
+          p._id === product._id
             ? { ...p, name: editValues.name, price: Number(editValues.price) }
             : p
         )
@@ -74,7 +43,7 @@ function AdminAllProduct() {
       setEditId(null); // exit edit mode
     } else {
       // Enter edit mode
-      setEditId(product.id);
+      setEditId(product._id);
       setEditValues({ name: product.name, price: product.price });
     }
   };
@@ -85,107 +54,119 @@ function AdminAllProduct() {
 
   return (
     <Box sx={{ p: { xs: 2, sm: 3 } }} justifyContent="center">
-      <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
-        Best Selling Product
-      </Typography>
+  <Typography variant="h4" fontWeight="bold" mb={4} textAlign="center">
+    Best Selling Product
+  </Typography>
 
+  <Grid
+    container
+    spacing={2}
+    justifyContent="center"
+    sx={{ px: { xs: 0, sm: 4, md: 6 } }}
+  >
+    {products.map((product) => (
       <Grid
-        container
-        spacing={2}
-        justifyContent="center"
-        sx={{ px: { xs: 0, sm: 4, md: 6 } }}
+        item
+        key={product._id}
+        xs={12}
+        sm={6}
+        md={4}
+        lg={3}
+        sx={{ display: "flex" }}
       >
-        {products.map((product) => (
-          <Grid item key={product.id} xs={12} sm={6} md={4} lg={3}>
-            <Card
+        <Card
+          sx={{
+            borderRadius: "16px",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.10)",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          {/* Image section */}
+          <Box sx={{ display: "flex", justifyContent: "center" }}>
+            <CardMedia
+              component="img"
+              image={product.images[0]}
+              alt={product.name}
               sx={{
-                borderRadius: "16px",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.10)",
-                height: "100%",
+                height: 200,
+                objectFit: "cover",
+                p: 2,
+                bgcolor: "#F7F7F7",
+              }}
+            />
+          </Box>
+
+          {/* Content section fills remaining space */}
+          <CardContent sx={{ textAlign: "left", flexGrow: 1 }}>
+            <Typography variant="body2" color="text.secondary">
+              {product.category.cat_name}
+            </Typography>
+
+            {editId === product._id ? (
+              <TextField
+                fullWidth
+                size="small"
+                name="name"
+                value={editValues.name}
+                onChange={handleChange}
+                sx={{ mb: 1 }}
+              />
+            ) : (
+              <Typography variant="subtitle1" fontWeight="bold">
+                {product.name}
+              </Typography>
+            )}
+
+            <Rating
+              value={product.rating}
+              readOnly
+              size="small"
+              sx={{ mt: 1, mb: 1 }}
+            />
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mt: 1,
               }}
             >
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <CardMedia
-                  component="img"
-                  image={product.image}
-                  alt={product.name}
-                  sx={{
-                    height: 200,
-                    objectFit: "contain",
-                    p: 2,
-                    bgcolor: "#F7F7F7",
-                  }}
-                />
-              </Box>
-
-              <CardContent sx={{ textAlign: "left" }}>
-                <Typography variant="body2" color="text.secondary">
-                  {product.category}
-                </Typography>
-
-                {editId === product.id ? (
-                  <TextField
-                    fullWidth
-                    size="small"
-                    name="name"
-                    value={editValues.name}
-                    onChange={handleChange}
-                    sx={{ mb: 1 }}
-                  />
-                ) : (
-                  <Typography variant="subtitle1" fontWeight="bold">
-                    {product.name}
-                  </Typography>
-                )}
-
-                <Rating
-                  value={product.rating}
-                  readOnly
+              {editId === product._id ? (
+                <TextField
                   size="small"
-                  sx={{ mt: 1, mb: 1 }}
+                  name="price"
+                  type="number"
+                  value={editValues.price}
+                  onChange={handleChange}
                 />
+              ) : (
+                <Typography variant="h6" fontWeight="bold">
+                  ${product.price}
+                </Typography>
+              )}
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    mt: 1,
-                  }}
-                >
-                  {editId === product.id ? (
-                    <TextField
-                      size="small"
-                      name="price"
-                      type="number"
-                      value={editValues.price}
-                      onChange={handleChange}
-                    />
-                  ) : (
-                    <Typography variant="h6" fontWeight="bold">
-                      ${product.price}
-                    </Typography>
-                  )}
-
-                  <IconButton
-                    onClick={() => handleEditClick(product)}
-                    sx={{
-                      bgcolor: editId === product.id ? "green" : "#001f54",
-                      color: "white",
-                      "&:hover": {
-                        bgcolor: editId === product.id ? "darkgreen" : "#003080",
-                      },
-                    }}
-                  >
-                    {editId === product.id ? <SaveIcon /> : <EditIcon />}
-                  </IconButton>
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+              <IconButton
+                onClick={() => handleEditClick(product)}
+                sx={{
+                  bgcolor: editId === product._id ? "green" : "#001f54",
+                  color: "white",
+                  "&:hover": {
+                    bgcolor: editId === product._id ? "darkgreen" : "#003080",
+                  },
+                }}
+              >
+                {editId === product._id ? <SaveIcon /> : <EditIcon />}
+              </IconButton>
+            </Box>
+          </CardContent>
+        </Card>
       </Grid>
-    </Box>
+    ))}
+  </Grid>
+</Box>
+
   );
 }
 
