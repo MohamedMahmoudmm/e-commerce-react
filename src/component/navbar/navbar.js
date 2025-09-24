@@ -31,7 +31,7 @@ export default function NavBar() {
 
             {/* Links */}
             <Box sx={{ display: "flex", gap: 4}}>
-              {["Furniture", "Shop", "About Us", "Contact"].map((item) => (
+              {["Home", "Shop", "About Us", "Contact"].map((item) => (
                 <Button
                 component={Link}
                 to={`/${item.toLowerCase()}`}

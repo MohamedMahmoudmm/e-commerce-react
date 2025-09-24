@@ -4,51 +4,21 @@ import {
   Grid,
 } from "@mui/material";
 import OrderCard from "./orderCard";
-
-const orders = [
-  {
-    id: "9eg76AiKmWTZgOxJPEbC",
-    date: "August 6, 2025",
-    status: "canceled",
-    total: 112.99,
-    products: [
-      {
-        name: "DANVOY Womens",
-        qty: 1,
-      image: "./chair.png",
-      },
-      {
-        name: "Casual Denim Jeans",
-        qty: 2,
-      image: "./chair.png",
-      },
-    ],
-  },
-  {
-    id: "CzOKTWuR4hCUnX9UXxji",
-    date: "August 5, 2025",
-    status: "canceled",
-    total: 999.99,
-    products: [
-      {
-        name: "Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor",
-        qty: 1,
-      image: "./chair.png",
-      },
-      {
-        name: "Wireless Mechanical Keyboard",
-        qty: 1,
-      image: "./chair.png",
-      },
-    ],
-  },
-];
-
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function CanceledOrder() {
 
+ const [orders, setAllOrders] = useState([]);
  
+ useEffect(() => {
+     axios.get("http://127.0.0.1:3000/orders",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
+       console.log(res.data)
+        setAllOrders(res.data.data)
+       // console.log(allorders);
+       
+     })
+   }, []);
 
   return (
     <Box sx={{ p: 3 }}>

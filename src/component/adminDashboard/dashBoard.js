@@ -10,19 +10,26 @@ import {
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios, { all } from "axios";
+import { fetchAllProducts } from "../../redux/reducers/allProductReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const Dashboard = () => {
 //getAllProduct
 //getAllOrders
 const [allProduct, setAllProduct] = useState([]);
 const [allorders, setAllOrders] = useState([]);
+ const all_Product = useSelector((state) => state.allProduct.All_Product);
+
+const dispatch=useDispatch()
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:3000/api/products",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
-      console.log(res.data)
-      setAllProduct(res.data.products)
-    })
+      dispatch(fetchAllProducts())
+      
   }, []);
+   useEffect(() => {
+        setAllProduct(all_Product);
+      }, [all_Product]);
+
   useEffect(() => {
     axios.get("http://127.0.0.1:3000/orders",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
       console.log(res.data)
