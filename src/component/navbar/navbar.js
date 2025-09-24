@@ -55,7 +55,7 @@ export default function NavBar() {
               <IconButton color="inherit" component={Link} to="/wishlist">
               <FavoriteIcon />
             </IconButton>
-               <IconButton color="inherit">
+               <IconButton color="inherit" component={Link} to="/cart">
               <ShoppingCartIcon />
             </IconButton>
            
