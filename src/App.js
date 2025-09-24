@@ -14,6 +14,8 @@ import CanceledOrder from './component/adminallorders/cancelledOrder';
 import PendingOrder from './component/adminallorders/pendingOrder';
 import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 import IlanaGrocery from './component/shop/shop';
+import Login from './component/Login/Login';
+import Register from './component/Register/Register';
 
 
 
@@ -35,6 +37,8 @@ function App() {
         <Route path="/canceledOrders" element={<CanceledOrder />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/wishlist" element={<WishListPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
 
       </Routes>
       
