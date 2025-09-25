@@ -9,9 +9,9 @@ import {
 } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios, { all } from "axios";
-import { fetchAllProducts } from "../../redux/reducers/allProductReducer";
+import { fetchAllProducts, getAcceptedOrders, getCancelledOrders, getPendingOrders } from "../../redux/reducers/allProductReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { axiosInstance } from "../../Axios/AxiosInstance";
 
 const Dashboard = () => {
 //getAllProduct
@@ -19,6 +19,9 @@ const Dashboard = () => {
 const [allProduct, setAllProduct] = useState([]);
 const [allorders, setAllOrders] = useState([]);
  const all_Product = useSelector((state) => state.allProduct.All_Product);
+const [acceptedorders, setAcceptedOrders] = useState([]);
+const [pendingdorders, setPendingOrders] = useState([]);
+const [cancelledorders, setCancelledOrders] = useState([]);
 
 const dispatch=useDispatch()
 
@@ -31,11 +34,28 @@ const dispatch=useDispatch()
       }, [all_Product]);
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:3000/orders",{headers:{token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OGFkNzQzMTM1YTM2Mzc1OTllNDIzYjkiLCJyb2xlIjoiYWRtaW4iLCJlbWFpbCI6Im1tMzc3MDY2OEBnbWFpbC5jb20iLCJpYXQiOjE3NTg2NTYwMTQsImV4cCI6MTc1ODc0MjQxNH0.A333zpTZjmroo-b3NBVWnEIpETyG14yzLrDfOuY8H0A"}}).then((res) => {
+    axiosInstance.get("orders").then((res) => {
       console.log(res.data)
       setAllOrders(res.data.data)
     })
   }, []);
+  useEffect(() => {
+      const processingOrders = allorders.filter(order => order.status === "processing");
+      const pendingOrders = allorders.filter(order => order.status === "pending");
+      const cancelledOrders = allorders.filter(order => order.status === "cancelled");
+      setAcceptedOrders(processingOrders);
+      setPendingOrders(pendingOrders);
+      setCancelledOrders(cancelledOrders);
+  }, [allorders]);
+  useEffect(() => {
+    dispatch(getAcceptedOrders(acceptedorders))
+  }, [acceptedorders]);
+  useEffect(() => {
+    dispatch(getPendingOrders(pendingdorders))
+  },[pendingdorders]);
+  useEffect(() => {
+    dispatch(getCancelledOrders(cancelledorders))
+  },[cancelledorders]);
 
 
 
@@ -100,12 +120,12 @@ const dispatch=useDispatch()
         >
           <Typography>Pending Orders</Typography>
           <Typography variant="body2" color="text.secondary">
-            0 pending
+            {pendingdorders.length} pending
           </Typography>
         </Box>
         <LinearProgress
           variant="determinate"
-          value={0}
+          value={pendingdorders.length/allorders.length*100}
           sx={{ height: 6, borderRadius: 3, mb: 2 }}
         />
         <Button variant="outlined" size="small" component={Link}
@@ -121,12 +141,12 @@ const dispatch=useDispatch()
         >
           <Typography>Accepted Orders</Typography>
           <Typography variant="body2" color="success.main">
-            2 accepted
+            {acceptedorders.length} accepted
           </Typography>
         </Box>
         <LinearProgress
           variant="determinate"
-          value={40}
+          value={pendingdorders.length/allorders.length*100}
           sx={{
             height: 6,
             borderRadius: 3,
@@ -149,12 +169,12 @@ const dispatch=useDispatch()
         >
           <Typography>Canceled Orders</Typography>
           <Typography variant="body2" color="error.main">
-            5 canceled
+            {cancelledorders.length} canceled
           </Typography>
         </Box>
         <LinearProgress
           variant="determinate"
-          value={70}
+          value={cancelledorders.length/allorders.length*100}
           sx={{
             height: 6,
             borderRadius: 3,

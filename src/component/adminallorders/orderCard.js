@@ -26,8 +26,8 @@ function OrderCard({order}){
       })
   }
     const statusColors = {
-  accepted: "success",
-  canceled: "error",
+  processing: "success",
+  cancelled: "error",
   pending: "warning",
 };
     return(
