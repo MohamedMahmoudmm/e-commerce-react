@@ -47,6 +47,9 @@ function AdminAllProduct() {
             : p
         )
       );
+      console.log(editValues);
+      
+      axiosInstance.put(`api/products/${product._id}`, editValues);
       setEditId(null); // exit edit mode
     } else {
       // Enter edit mode

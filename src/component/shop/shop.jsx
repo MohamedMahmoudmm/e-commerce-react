@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IconButton, Grid,
   Box,
@@ -18,6 +18,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 
 import { styled } from "@mui/material/styles";
+import { fetchAllProducts } from "../../redux/reducers/allProductReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const Sidebar = () => (
   <Box
@@ -76,14 +78,13 @@ const Sidebar = () => (
 );
 
 const IlanaGrocery = () => {
-  const products = [
-    { id: 1, name: "Sakarias Armchair", category: "Chair", price: 392, rating: 4, image: "./chair.png", }
-    , { id: 2, name: "Baltsar Chair", category: "Chair", price: 299, rating: 5, image: "./chair2.png", }
-    , { id: 3, name: "Anjay Chair", category: "Chair", price: 519, rating: 4, image: "./chair.png", }
-    , { id: 4, name: "Nyantuy Chair", category: "Chair", price: 921, rating: 5, image: "./chair2.png", }
-    , { id: 5, name: "Another Chair", category: "Chair", price: 650, rating: 4, image: "./chair.png", }
-    , { id:6, name: "Another Chair", category: "Chair", price: 650, rating: 4, image: "./chair.png", }
-    ,];
+  
+     const all_Product = useSelector((state) => state.allProduct.All_Product);
+     const dispatch = useDispatch();
+     useEffect(() => {
+      dispatch(fetchAllProducts())
+      
+  }, []);
   return (
     <Box
       sx={{
@@ -150,7 +151,7 @@ const IlanaGrocery = () => {
           </Typography>
         </Box>
         <Grid container spacing={3} justifyContent="center">
-          {products.map((item) => (
+          {all_Product.map((item) => (
             <Grid
               item
               xs={12} 
@@ -158,7 +159,7 @@ const IlanaGrocery = () => {
               md={3} 
               lg={2.4} 
               xl={2} 
-              key={item.id}
+              key={item._id}
               display="flex"
               justifyContent="center"
             >
@@ -197,7 +198,7 @@ const IlanaGrocery = () => {
                   <CardMedia
                     component="img"
                     height="220"
-                    image={item.image}
+                    image={item.images[0]}
                     alt={item.name}
                     sx={{
                       objectFit: "contain",
@@ -213,7 +214,7 @@ const IlanaGrocery = () => {
                     color="text.secondary"
                     gutterBottom
                   >
-                    {item.category}
+                    {item.cat_name}
                   </Typography>
 
                   <Typography
