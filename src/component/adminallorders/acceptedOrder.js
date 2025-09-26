@@ -5,12 +5,16 @@ import {
 } from "@mui/material";
 import OrderCard from "./orderCard";
 import { useEffect, useState } from "react";
-import axios from "axios";
-import { axiosInstance } from "../../Axios/AxiosInstance";
 import { useSelector } from "react-redux";
 
 export default function AcceptOrder() {
-const orders=useSelector((state) => state.acceptedOrder.acceptOrder);
+  const allorders = useSelector((state) => state.allOrders.All_Orders);
+  const [orders, setPendingOrders] = useState([]);
+
+  useEffect(() => {
+    const pendingOrders = allorders.filter(order => order.status === "processing");
+    setPendingOrders(pendingOrders);
+  }, [allorders]);
 
   return (
     <Box sx={{ p: 3 }}>
@@ -20,7 +24,7 @@ const orders=useSelector((state) => state.acceptedOrder.acceptOrder);
 
       <Grid container spacing={3} justifyContent={"center"}>
         {orders.map((order) => (
-         <OrderCard key={order.id} order={order} />
+          <OrderCard key={order.id} order={order} />
         ))}
       </Grid>
     </Box>

@@ -13,7 +13,6 @@ import {
   IconButton,
   Button,
   Breadcrumbs,
-  Link,
   Avatar,
   Divider,
   Grid,
@@ -26,53 +25,23 @@ import {
   Remove,
   Add,
   Close,
-  Home
 } from '@mui/icons-material';
-import {io} from "socket.io-client";
+import { getSocket } from "../../redux/reducers/socket";
 
 const ShoppingCart = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-const myId="68b55492d5d84e2d00569838"
-const myRole="user"
-   const [socket, setSocket] = useState(null);
-useEffect(() => {
-  const newSocket = io("http://127.0.0.1:3000");
-  setSocket(newSocket);
 
-  // Example: myId = user._id, role = "user" or "admin"
-  newSocket.emit("user-online", { userId: myId, role: myRole });
 
-  return () => {
-    newSocket.disconnect();
-  };
-}, [myId, myRole]);
-///////////////////////////////////////
-useEffect(() => {
-  if (!socket) return;
-
-  socket.on("notify-admin", (data) => {
-    console.log("Admin received new order:", data);
-    //showNotification(`📦 New order from User ${data.from}: ${data.message}`);
-  });
-
-  socket.on("notify-user", (data) => {
-    console.log("User got order accepted:", data);
-    //showNotification(`✅ Your order was accepted: ${data.message}`);
-  });
-
-  return () => {
-    socket.off("notify-admin");
-    socket.off("notify-user");
-  };
-}, [socket]);
 //////////////////////////////
 function placeOrder() {
-//   socket.emit("order-placed", {
+//   const myId="68b55492d5d84e2d00569838"
+//   getSocket().emit("order-placed", {
 //   userId: myId,
 //   orderId: "123",
 //   message: "I placed a new order",
 // });
+
 }
 
   const cartItems = [
