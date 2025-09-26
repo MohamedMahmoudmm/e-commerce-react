@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { fetchAllProducts, getAcceptedOrders, getCancelledOrders, getPendingOrders } from "../../redux/reducers/allProductReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../../Axios/AxiosInstance";
+import {io} from "socket.io-client";
 
 const Dashboard = () => {
 //getAllProduct
@@ -22,6 +23,48 @@ const [allorders, setAllOrders] = useState([]);
 const [acceptedorders, setAcceptedOrders] = useState([]);
 const [pendingdorders, setPendingOrders] = useState([]);
 const [cancelledorders, setCancelledOrders] = useState([]);
+    const [socket, setSocket] = useState(null);
+    const myId="68b5507764265aaf028d740e"
+    const myRole="admin"
+useEffect(() => {
+  const newSocket = io("http://127.0.0.1:3000");
+  setSocket(newSocket);
+
+  // Example: myId = user._id, role = "user" or "admin"
+  newSocket.emit("user-online", { userId: myId, role: myRole });
+
+  return () => {
+    newSocket.disconnect();
+  };
+}, [myId, myRole]);
+///////////////////////////////////////
+useEffect(() => {
+  if (!socket) return;
+
+  socket.on("notify-admin", (data) => {
+    console.log("Admin received new order:", data);
+   // showNotification(`📦 New order from User ${data.from}: ${data.message}`);
+  });
+
+  socket.on("notify-user", (data) => {
+    console.log("User got order accepted:", data);
+    //showNotification(`✅ Your order was accepted: ${data.message}`);
+  });
+
+  return () => {
+    socket.off("notify-admin");
+    socket.off("notify-user");
+  };
+}, [socket]);
+/////////////////
+function acceptOrder(){
+       socket.emit("order-accepted", {
+  adminId: myId,
+  userId: "68b55492d5d84e2d00569838", // the target user
+  orderId: "123",
+  message: "Your order has been accepted",
+});
+}
 
 const dispatch=useDispatch()
 
