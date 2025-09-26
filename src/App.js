@@ -17,10 +17,35 @@ import Login from './component/login/Login';
 import Register from './component/register/Register';
 import WishlistPage from './component/wishlist/WishList'
 import ShoppingCart from './component/cart/cart';
+import { useEffect } from 'react';
+import { initSocket } from './redux/reducers/socket';
 
 
 
 function App() {
+  const myId = "USER_ID";   // from auth state
+  const myRole = "user";    // or "admin"
+
+  useEffect(() => {
+ const newSocket = initSocket("USER_ID", "user");
+    // Register user/admin with server
+    newSocket.emit("user-online", { userId: myId, role: myRole });
+
+    // Global listeners
+    newSocket.on("notify-admin", (data) => {
+      console.log("Admin received new order:", data);
+      // you can also dispatch a Redux action here
+    });
+
+    newSocket.on("notify-user", (data) => {
+      console.log("User got order accepted:", data);
+    });
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [ myId, myRole]);
+
   return (
     <div className="App">
       <BrowserRouter>

@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 export default function CanceledOrder() {
 
- const orders=useSelector((state) => state.cancelledOrder.cancelledOrder);
+ const orders=[];
  
 
   return (

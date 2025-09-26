@@ -4,23 +4,21 @@ import {
   Grid,
 } from "@mui/material";
 import OrderCard from "./orderCard";
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { axiosInstance } from "../../Axios/AxiosInstance";
-import { useDispatch } from "react-redux";
-import { getAcceptedOrders } from "../../redux/reducers/allProductReducer";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllOrders } from "../../redux/reducers/allOrderReducer";
 
 
 
 
 export default function OrdersList() {
 
-const [allorders, setAllOrders] = useState([]);
+const allorders = useSelector((state) => state.allOrders.All_Orders);
+const dispatch=useDispatch()
+
 useEffect(() => {
-   axiosInstance.get("orders").then((res) => {
-         console.log(res.data)
-         setAllOrders(res.data.data)
-       })
+      dispatch(fetchAllOrders())
+      
   }, []);
   
  
