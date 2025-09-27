@@ -16,7 +16,7 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 
-import { fetchAllProducts } from "../../redux/reducers/allProductReducer";
+import { fetchAllProducts, getCategories } from "../../redux/reducers/allProductReducer";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 
@@ -67,9 +67,8 @@ const IlanaGrocery = () => {
 
   useEffect(() => {
     dispatch(fetchAllProducts());
-    axios
-      .get("http://127.0.0.1:3000/categories")
-      .then((res) => setCategories(res.data.data || []))
+    // axios.get("http://127.0.0.1:3000/categories")
+      getCategories().then((res) => setCategories(res.data.data || []))
       .catch((err) => console.log(err));
   }, [dispatch]);
 

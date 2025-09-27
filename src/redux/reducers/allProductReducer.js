@@ -51,7 +51,9 @@ const allProduct = createSlice({
   },
 });
 
-
+export const getCategories = () => {
+  return axiosInstance.get("/categories"); 
+};
 const myStore = configureStore({
   reducer: {
     allProduct: allProduct.reducer,
