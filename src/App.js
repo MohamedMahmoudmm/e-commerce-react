@@ -19,6 +19,9 @@ import WishlistPage from './component/WishList/WishList.jsx'
 import ShoppingCart from './component/cart/cart';
 import { useEffect } from 'react';
 import { initSocket } from './redux/reducers/socket';
+import ConfirmEmail from './component/Register/confirmMail.jsx';
+import ResetPassword from './component/resetPass/resetPassword.jsx';
+import ForgotPassword from './component/resetPass/forgetPassword.jsx';
 
 
 
@@ -63,7 +66,12 @@ function App() {
         <Route path="/canceledOrders" element={<CanceledOrder />} />
         <Route path="/product/:id" element={<ProductDetailsPage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password/:token" element={<ResetPassword />} />
+
+        <Route path="/signup" element={<Register />} />
+        <Route path="/signup/confirm" element={<ConfirmEmail/>} />
+        
         <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<ShoppingCart/>} />
       </Routes>

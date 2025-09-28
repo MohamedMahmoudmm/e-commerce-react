@@ -2,6 +2,7 @@ import { configureStore, createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { axiosInstance } from '../../Axios/AxiosInstance';
 import allOrders from './allOrderReducer';
 import favoriteReducer from './favReducer';
+import authSlice from './authReducer';
 // Async thunk for fetching products
 export const fetchAllProducts = createAsyncThunk(
   "GetProducts/fetchAllProducts",
@@ -56,10 +57,10 @@ export const getCategories = () => {
 };
 const myStore = configureStore({
   reducer: {
+    auth: authSlice,      
     allProduct: allProduct.reducer,
     allOrders,
-    favorite: favoriteReducer, 
-
+    favorite: favoriteReducer,
   },
 });
 
