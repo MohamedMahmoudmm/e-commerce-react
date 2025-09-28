@@ -12,192 +12,19 @@ import {
   Rating,
   Paper,
 } from "@mui/material";
-import { ShoppingCart, RemoveRedEye, Close } from "@mui/icons-material";
+import { ShoppingCart, Close } from "@mui/icons-material";
+import { useDispatch, useSelector } from "react-redux";
+import {toggleFavorite} from "../../redux/reducers/favReducer";
+
+
+
 
 const WishlistPage = () => {
-  const wishlistItems = [
-    {
-      id: 1,
-      name: "Salaries Armchair",
-      price: 392,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 2,
-      name: "Baltzar Chair",
-      price: 299,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 3,
-      name: "Anjay Chair",
-      price: 519,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1503602642458-232111445657?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 4,
-      name: "Nyantuy Chair",
-      price: 921,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 1,
-      name: "Salaries Armchair",
-      price: 392,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 2,
-      name: "Baltzar Chair",
-      price: 299,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 3,
-      name: "Anjay Chair",
-      price: 519,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1503602642458-232111445657?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 4,
-      name: "Nyantuy Chair",
-      price: 921,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 1,
-      name: "Salaries Armchair",
-      price: 392,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 2,
-      name: "Baltzar Chair",
-      price: 299,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 3,
-      name: "Anjay Chair",
-      price: 519,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1503602642458-232111445657?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 4,
-      name: "Nyantuy Chair",
-      price: 921,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 1,
-      name: "Salaries Armchair",
-      price: 392,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 2,
-      name: "Baltzar Chair",
-      price: 299,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 3,
-      name: "Anjay Chair",
-      price: 519,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1503602642458-232111445657?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 4,
-      name: "Nyantuy Chair",
-      price: 921,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 1,
-      name: "Salaries Armchair",
-      price: 392,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 2,
-      name: "Baltzar Chair",
-      price: 299,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1519947486511-46149fa0a254?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 3,
-      name: "Anjay Chair",
-      price: 519,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1503602642458-232111445657?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-    {
-      id: 4,
-      name: "Nyantuy Chair",
-      price: 921,
-      rating: 5,
-      image:
-        "https://images.unsplash.com/photo-1592078615290-033ee584e267?w=300&h=300&fit=crop",
-      category: "Chair",
-    },
-  ];
-
+  const wishlistItems = useSelector((state) => state.favorite.items);
+    const dispatch = useDispatch();
+  const handleRemove = (item) => {
+    dispatch(toggleFavorite(item));
+  };
   return (
     <>
 <Box 
@@ -267,6 +94,7 @@ const WishlistPage = () => {
                       bgcolor: "white",
                       "&:hover": { bgcolor: "grey.100" },
                     }}
+                        onClick={() => handleRemove(item)}
                   >
                     <Close />
                   </IconButton>
@@ -274,12 +102,13 @@ const WishlistPage = () => {
                   <CardMedia
                     component="img"
                     height="220"
-                    image={item.image}
+                    image={item.images[0] || ""}
                     alt={item.name}
                     sx={{
                       objectFit: "contain",
                       display: "block",
                       mx: "auto",
+                   
                     }}
                   />
                 </Box>
@@ -290,7 +119,7 @@ const WishlistPage = () => {
                     color="text.secondary"
                     gutterBottom
                   >
-                    {item.category}
+                    {item.category.cat_name}
                   </Typography>
 
                   <Typography
@@ -342,15 +171,7 @@ const WishlistPage = () => {
           ))}
         </Grid>
 
-        <Box textAlign="center" mt={6}>
-          <Button
-            variant="outlined"
-            size="large"
-            sx={{ width: { xs: "100%", sm: "auto" } }}
-          >
-            View All Products
-          </Button>
-        </Box>
+  
       </Container>
     </Paper>
     </>
