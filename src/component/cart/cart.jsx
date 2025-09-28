@@ -19,7 +19,9 @@ import {
   Card,
   CardContent,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Snackbar,
+  Alert
 } from '@mui/material';
 import {
   Remove,
@@ -27,69 +29,159 @@ import {
   Close,
 } from '@mui/icons-material';
 import { getSocket } from "../../redux/reducers/socket";
+import { axiosInstance } from '../../Axios/AxiosInstance';
 
 const ShoppingCart = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const [cartItems, setCartItems] = useState([]);
+const [subTotal, setSubTotal] = useState(0);
+ const [total,setTotal] =useState(0);
+ const [qty, setQty] = useState(1);
+ const [cartId, setCartId] = useState("");
 
+ const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success", // "error" | "warning" | "info" | "success"
+  });
+
+  const handleClose = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+useEffect(() => {
+ 
+  axiosInstance.get("cart").then((res) => {
+    console.log(res.data);
+    setCartItems(res.data.data.items);
+    setCartId(res.data.data._id);
+    console.log(cartId);
+    
+  })
+},[])
+
+useEffect(() => {
+
+    const TotalPrice = cartItems.reduce((total, item) => total + item.productId.price * item.quantity, 0);
+    setSubTotal(TotalPrice);
+    setTotal(TotalPrice-100);
+},[cartItems])
+
+function handleQuantityChange(productId, quantity) {
+  if (quantity < 1) {
+    return;
+  }
+  console.log(productId, quantity);
+  
+
+  axiosInstance.put(`cart/${cartId}`, { productId: productId, quantity: quantity }).then((res) => {
+      const updatedCartItems = cartItems.map((item) => {
+    if (item.productId._id === productId) {
+      return {
+        ...item,
+        quantity,
+      };
+    }
+    return item;
+  });
+  setCartItems(updatedCartItems);
+  }).catch((err) => {
+   if (err.response) {
+          setSnackbar({
+            open: true,
+            message: err.response.data.message || "Something went wrong",
+            severity: "error",
+          });
+        } else if (err.request) {
+          setSnackbar({
+            open: true,
+            message: "Network error. Please check your connection.",
+            severity: "error",
+          });
+        } else {
+          setSnackbar({
+            open: true,
+            message: "Unexpected error: " + err.message,
+            severity: "error",
+          });
+        }
+      });
+}
+
+function removeItem(productId) {
+  axiosInstance.delete(`cart/${productId}`).then((res) => {
+    const updatedCartItems = cartItems.filter((item) => item.productId._id !== productId);
+    setCartItems(updatedCartItems);
+  }).catch((err) => {
+   if (err.response) {
+          setSnackbar({
+            open: true,
+            message: err.response.data.message || "Something went wrong",
+            severity: "error",
+          });
+        } else if (err.request) {
+          setSnackbar({
+            open: true,
+            message: "Network error. Please check your connection.",
+            severity: "error",
+          });
+        } else {
+          setSnackbar({
+            open: true,
+            message: "Unexpected error: " + err.message,
+            severity: "error",
+          });
+        }
+      });
+}
 
 //////////////////////////////
 function placeOrder() {
-//   const myId="68b55492d5d84e2d00569838"
-//   getSocket().emit("order-placed", {
-//   userId: myId,
-//   orderId: "123",
-//   message: "I placed a new order",
-// });
+  axiosInstance.post("cart/order", { shippingAddress: "fayoum" }).then((res) => {
+    setSnackbar({
+            open: true,
+            message: "Order placed successfully",
+            severity: "success",
+          });
+          setCartItems([]);
+      const myId="68b55492d5d84e2d00569838"
+  getSocket().emit("order-placed", {
+  userId: myId,
+  orderId: res.data.data._id,
+  message: "I placed a new order",
+});
+  }).catch((err) => {
+   if (err.response) {
+          setSnackbar({
+            open: true,
+            message: err.response.data.message || "Something went wrong",
+            severity: "error",
+          });
+        } else if (err.request) {
+          setSnackbar({
+            open: true,
+            message: "Network error. Please check your connection.",
+            severity: "error",
+          });
+        } else {
+          setSnackbar({
+            open: true,
+            message: "Unexpected error: " + err.message,
+            severity: "error",
+          });
+        }
+  })
+
 
 }
 
-  const cartItems = [
-    {
-      id: 1,
-      name: 'Wooden Sofa Chair',
-      color: 'Grey',
-      price: 80.00,
-      quantity: 4,
-      image: 'https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=80&h=80&fit=crop&crop=center',
-      subtotal: 320.00
-    },
-    {
-      id: 2,
-      name: 'Red Gaming Chair',
-      color: 'Black',
-      price: 90.00,
-      quantity: 2,
-      image: 'https://images.unsplash.com/photo-1592078615290-033ee584e267?w=80&h=80&fit=crop&crop=center',
-      subtotal: 180.00
-    },
-    {
-      id: 3,
-      name: 'Swivel Chair',
-      color: 'Light Brown',
-      price: 60.00,
-      quantity: 1,
-      image: 'https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=80&h=80&fit=crop&crop=center',
-      subtotal: 60.00
-    },
-    {
-      id: 4,
-      name: 'Circular Sofa Chair',
-      color: 'Brown',
-      price: 90.00,
-      quantity: 2,
-      image: 'https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?w=80&h=80&fit=crop&crop=center',
-      subtotal: 180.00
-    }
-  ];
+
 
   // Static values - no calculations
-  const totalItems = 9;
-  const subTotal = 740.00;
   const shipping = 0.00;
   const taxes = 0.00;
   const couponDiscount = -100.00;
-  const total = 640.00;
+ 
 
   const OrderSummary = () => (
     <Card sx={{ height: 'fit-content', boxShadow: 3 }}>
@@ -101,7 +193,7 @@ function placeOrder() {
         <Box sx={{ mb: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
             <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Items</Typography>
-            <Typography sx={{ fontWeight: 500 }}>{totalItems}</Typography>
+            <Typography sx={{ fontWeight: 500 }}>{cartItems.length}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
             <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Sub Total</Typography>
@@ -131,6 +223,7 @@ function placeOrder() {
         </Box>
         
         <Button 
+        disabled={cartItems.length === 0}
           variant="contained" 
           fullWidth 
           sx={{ 
@@ -198,28 +291,29 @@ function placeOrder() {
               // Mobile View - Cards
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                 {cartItems.map((item) => (
-                  <Card key={item.id} sx={{ p: 3, boxShadow: 2 }}>
+                  <Card key={item.productId.id} sx={{ p: 3, boxShadow: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                       <IconButton 
+                        onClick={() => removeItem(item.productId._id)}
                         size="small" 
                         sx={{ alignSelf: 'flex-start' }}
                       >
                         <Close />
                       </IconButton>
                       <Avatar 
-                        src={item.image} 
+                        src={item.productId.images[0]} 
                         sx={{ width: 60, height: 60 }}
                         variant="rounded"
                       />
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 0.5 }}>
-                          {item.name}
+                          {item.productId.name}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                          Color: {item.color}
+                          Color: {item.productId.color}
                         </Typography>
                         <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                          ${item.price.toFixed(2)}
+                          ${item.productId.price.toFixed(2)}
                         </Typography>
                       </Box>
                     </Box>
@@ -227,6 +321,7 @@ function placeOrder() {
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton 
+                          onClick={() => handleQuantityChange(item.productId._id, item.quantity - 1)}
                           size="small" 
                           sx={{ 
                             border: '1px solid #ddd',
@@ -241,6 +336,7 @@ function placeOrder() {
                           {item.quantity}
                         </Typography>
                         <IconButton 
+                          onClick={() => handleQuantityChange(item.productId._id, item.quantity + 1)}
                           size="small" 
                           sx={{ 
                             border: '1px solid #ddd',
@@ -253,7 +349,7 @@ function placeOrder() {
                         </IconButton>
                       </Box>
                       <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                        ${item.subtotal.toFixed(2)}
+                        ${item.productId.price*item.quantity.toFixed(2)}
                       </Typography>
                     </Box>
                   </Card>
@@ -320,32 +416,33 @@ function placeOrder() {
                   </TableHead>
                   <TableBody>
                     {cartItems.map((item) => (
-                      <TableRow key={item.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
+                      <TableRow key={item.productId.id} sx={{ '&:hover': { backgroundColor: '#f9f9f9' } }}>
                         <TableCell sx={{ py: 3 }}>
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                             <Avatar 
-                              src={item.image} 
+                              src={item.productId.images[0]} 
                               sx={{ width: 60, height: 60 }}
                               variant="rounded"
                             />
                             <Box>
                               <Typography variant="subtitle1" sx={{ fontWeight: 500, mb: 0.5 }}>
-                                {item.name}
+                                {item.productId.name}
                               </Typography>
                               <Typography variant="body2" color="text.secondary">
-                                Color: {item.color}
+                                category: {item.productId.category.cat_name}
                               </Typography>
                             </Box>
                           </Box>
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            ${item.price.toFixed(2)}
+                            ${item.productId.price.toFixed(2)}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
                           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <IconButton 
+                              onClick={() => handleQuantityChange(item.productId._id, item.quantity - 1)}
                               size="small" 
                               sx={{ 
                                 border: '1px solid #ddd',
@@ -361,6 +458,7 @@ function placeOrder() {
                               {item.quantity}
                             </Typography>
                             <IconButton 
+                              onClick={() => handleQuantityChange(item.productId._id, item.quantity + 1)}
                               size="small" 
                               sx={{ 
                                 border: '1px solid #ddd',
@@ -376,11 +474,13 @@ function placeOrder() {
                         </TableCell>
                         <TableCell align="center">
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            ${item.subtotal.toFixed(2)}
+                            ${item.productId.price*item.quantity.toFixed(2)}
                           </Typography>
                         </TableCell>
                         <TableCell align="center">
-                          <IconButton sx={{ '&:hover': { color: 'error.main' } }}>
+                          <IconButton 
+                          onClick={() => removeItem(item.productId._id)}
+                          sx={{ '&:hover': { color: 'error.main' } }}>
                             <Close />
                           </IconButton>
                         </TableCell>
@@ -399,6 +499,16 @@ function placeOrder() {
         </Grid>
         </Container>
       </Box>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={4000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
