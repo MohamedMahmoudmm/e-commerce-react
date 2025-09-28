@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import {
     Box,
     Typography,
@@ -11,11 +11,16 @@ import {
     IconButton,
     Button,
     Rating,
+    Snackbar,
+    Alert,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import Slider from "react-slick";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import axios from "axios";
+import { axiosInstance } from "../../Axios/AxiosInstance";
+import { Link } from "react-router-dom";
 
 function SampleNextArrow(props) {
     const { onClick } = props;
@@ -56,54 +61,52 @@ function SamplePrevArrow(props) {
 }
 
 export default function BestSeller() {
-    const [category, setCategory] = React.useState("Chair");
-
+    const [category, setCategory] = useState(null);
+const [categories, setCategories] = useState([]);
+    const [products, setProducts] = useState([]);
     const handleCategoryChange = (event, newCategory) => {
         if (newCategory) setCategory(newCategory);
+        console.log(newCategory);
+        
+       
     };
+useEffect(() => {
+     category && axiosInstance.post("/api/products/category", { cat: [category] }).then((res) => {
+            setProducts(res.data);
+        })
+},[category])
 
-    const products = [
-        {
-            id: 1,
-            name: "Sakarias Armchair",
-            category: "Chair",
-            price: 392,
-            rating: 4,
-            image: "./chair.png",
-        },
-        {
-            id: 2,
-            name: "Baltsar Chair",
-            category: "Chair",
-            price: 299,
-            rating: 5,
-            image: "./chair2.png",
-        },
-        {
-            id: 3,
-            name: "Anjay Chair",
-            category: "Chair",
-            price: 519,
-            rating: 4,
-            image: "./chair.png",
-        },
-        {
-            id: 4,
-            name: "Nyantuy Chair",
-            category: "Chair",
-            price: 921,
-            rating: 5,
-            image: "./chair2.png",
-        },
-        {
-            id: 5,
-            name: "Another Chair",
-            category: "Chair",
-            price: 650,
-            rating: 4,
-            image: "./chair.png",
-        },
-    ];
+    useEffect(() => {
+        axiosInstance.get("/categories").then((res) => {
+            setCategories(res.data.data);
+        })
+        axiosInstance.get("/api/products").then((res) => {
+            console.log(res.data.products);
+            setProducts(res.data.products);
+            
+        })
+    },[])
+const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+    function AddToCart(id) {
+        axiosInstance.post("/cart", { productId: id, quantity: 1 }).then((res) => {
+            console.log(res);
+              setSnackbar({
+        open: true,
+        message: `Product added to cart successfully`,
+        severity: "info",
+      });
+        });
+    }
+
+    const handleClose = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+    
+
 
     const settings = {
         dots: false,
@@ -148,10 +151,10 @@ export default function BestSeller() {
                     p: 1,
                 }}
             >
-                {["Chair", "Beds", "Sofa", "Lamp"].map((cat) => (
+                {categories.map((cat) => (
                     <ToggleButton
-                        key={cat}
-                        value={cat}
+                        key={cat._id}
+                        value={cat._id}
                         sx={{
                             textTransform: "none",
                             border: "none",
@@ -159,7 +162,7 @@ export default function BestSeller() {
                             px: 3,
                         }}
                     >
-                        {cat}
+                        {cat.cat_name}
                     </ToggleButton>
                 ))}
             </ToggleButtonGroup>
@@ -168,7 +171,7 @@ export default function BestSeller() {
             <Box sx={{ position: "relative", px: 6}}>
                 <Slider {...settings}>
                     {products.map((product) => (
-                        <Box key={product.id} px={1} >
+                        <Box key={product._id} px={1} >
                             <Card
                                 sx={{
                                     borderRadius: "16px",
@@ -180,7 +183,7 @@ export default function BestSeller() {
                                 <Box sx={{ display: "flex", justifyContent: "center" }}>
                                     <CardMedia
                                     component="img"
-                                    image={product.image}
+                                    image={product.images[0]}
                                     alt={product.name}
                                     sx={{ height: 200, objectFit: "contain", p: 2 ,bgcolor: "#F7F7F7" }}
                                 />
@@ -188,7 +191,7 @@ export default function BestSeller() {
                                 
                                 <CardContent sx={{ textAlign: "left" }}>
                                     <Typography variant="body2" color="text.secondary">
-                                        {product.category}
+                                        {product.cat_name}
                                     </Typography>
                                     <Typography variant="subtitle1" fontWeight="bold">
                                         {product.name}
@@ -211,6 +214,7 @@ export default function BestSeller() {
                                             ${product.price}
                                         </Typography>
                                         <IconButton
+                                            onClick={() => AddToCart(product._id)}
                                             sx={{
                                                 bgcolor: "#001f54",
                                                 color: "white",
@@ -229,6 +233,8 @@ export default function BestSeller() {
 
             {/* View All */}
             <Button
+            component={Link}
+            to="/shop"
                 sx={{
                     mt: 4,
                     textTransform: "none",
@@ -238,6 +244,20 @@ export default function BestSeller() {
             >
                 View All →
             </Button>
+            <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={4000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                  >
+                    <Alert
+                      onClose={handleClose}
+                      severity={snackbar.severity}
+                      sx={{ width: "100%" }}
+                    >
+                      {snackbar.message}
+                    </Alert>
+                  </Snackbar>
         </Box>
     );
 }
