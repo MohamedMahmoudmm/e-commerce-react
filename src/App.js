@@ -2,8 +2,6 @@ import './App.css';
 import NavBar from './component/navbar/navbar';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-// import ProductDetailsPage from './component/productDetails/details';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from './component/homePage';
 import Dashboard from './component/adminDashboard/dashBoard';
@@ -23,28 +21,27 @@ import ConfirmEmail from './component/Register/confirmMail.jsx';
 import ResetPassword from './component/resetPass/resetPassword.jsx';
 import ForgotPassword from './component/resetPass/forgetPassword.jsx';
 import { Alert, Snackbar } from '@mui/material';
+import ProtectedRoute from './component/ProtectedRoute.js';
 import ViewDetails from './component/productDetails/details';
 import NotFound from './component/notfound/NotFound.jsx';
 
-
-
 function App() {
-  const myId = "USER_ID";   // from auth state
-  const myRole = "user";    // or "admin"
-const [snackbar, setSnackbar] = useState({
+  const myId = "USER_ID"; 
+  const myRole = "user";   
+
+  const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "info",
   });
+
   useEffect(() => {
- const newSocket = initSocket("USER_ID", "user");
-    // Register user/admin with server
+    const newSocket = initSocket(myId, myRole);
     newSocket.emit("user-online", { userId: myId, role: myRole });
 
-    // Global listeners
     newSocket.on("notify-admin", (data) => {
       console.log("Admin received new order:", data);
-       setSnackbar({
+      setSnackbar({
         open: true,
         message: `New order received: ${data.orderId || ""}`,
         severity: "info",
@@ -62,60 +59,54 @@ const [snackbar, setSnackbar] = useState({
     return () => {
       newSocket.disconnect();
     };
-  }, [ myId, myRole]);
-const handleClose = () => {
+  }, [myId, myRole]);
+
+  const handleClose = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+
   return (
     <div className="App">
       <BrowserRouter>
-      
-       <NavBar/>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route path="/shop" element={<IlanaGrocery />} />
-        <Route path="/dash" element={<Dashboard />} />
-        <Route path="/adminAllProduct" element={<AdminAllProduct />} />
-        <Route path="/orders" element={<OrdersList />} />
-        <Route path="/acceptedOrders" element={<AcceptOrder />} />
-        <Route path="/pendingOrders" element={<PendingOrder/>} />
-        <Route path="/canceledOrders" element={<CanceledOrder />} />
+        <NavBar />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
+          <Route path="/signup/confirm" element={<ConfirmEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
+          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          <Route path="/shop" element={<ProtectedRoute><IlanaGrocery /></ProtectedRoute>} />
+          <Route path="/dash" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/adminAllProduct" element={<ProtectedRoute><AdminAllProduct /></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute><OrdersList /></ProtectedRoute>} />
+          <Route path="/acceptedOrders" element={<ProtectedRoute><AcceptOrder /></ProtectedRoute>} />
+          <Route path="/pendingOrders" element={<ProtectedRoute><PendingOrder /></ProtectedRoute>} />
+          <Route path="/canceledOrders" element={<ProtectedRoute><CanceledOrder /></ProtectedRoute>} />
+          <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
+          <Route path="/cart" element={<ProtectedRoute><ShoppingCart /></ProtectedRoute>} />
+          <Route path="/viewdetails/:id" element={<ProtectedRoute><ViewDetails /></ProtectedRoute>} />
+          
+          <Route path="*" element={<NotFound />} />
+        </Routes>
 
-        <Route path="/viewdetails/:id" element={<ViewDetails />} />
-
-
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-        <Route path="/signup" element={<Register />} />
-        <Route path="/signup/confirm" element={<ConfirmEmail/>} />
-        
-        <Route path="/wishlist" element={<WishlistPage />} />
-          <Route path="/cart" element={<ShoppingCart/>} />
-         <Route path="*" element={<NotFound />} />
-
-      </Routes>
-       <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      >
-        <Alert
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={4000}
           onClose={handleClose}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    
-      
+          <Alert
+            onClose={handleClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </BrowserRouter>
-
     </div>
   );
 }
