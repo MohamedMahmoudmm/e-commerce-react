@@ -55,6 +55,9 @@ const allProduct = createSlice({
 export const getCategories = () => {
   return axiosInstance.get("/categories"); 
 };
+export const getSingleProduct = (id) => {
+  return axiosInstance.get(`/api/products/${id}`);
+}
 const myStore = configureStore({
   reducer: {
     auth: authSlice,      

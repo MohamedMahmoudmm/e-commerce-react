@@ -3,7 +3,7 @@ import NavBar from './component/navbar/navbar';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import ProductDetailsPage from './component/productDetails/details';
+// import ProductDetailsPage from './component/productDetails/details';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import HomePage from './component/homePage';
 import Dashboard from './component/adminDashboard/dashBoard';
@@ -13,9 +13,9 @@ import CanceledOrder from './component/adminallorders/cancelledOrder';
 import PendingOrder from './component/adminallorders/pendingOrder';
 import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 import IlanaGrocery from './component/shop/shop';
-import Login from './component/login/Login';
-import Register from './component/register/Register';
-import WishlistPage from './component/wishlist/WishList.jsx'
+import Login from './component/Login/Login';
+import Register from './component/Register/Register';
+import WishlistPage from './component/WishList/WishList';
 import ShoppingCart from './component/cart/cart';
 import { useEffect, useState } from 'react';
 import { initSocket } from './redux/reducers/socket';
@@ -23,6 +23,8 @@ import ConfirmEmail from './component/Register/confirmMail.jsx';
 import ResetPassword from './component/resetPass/resetPassword.jsx';
 import ForgotPassword from './component/resetPass/forgetPassword.jsx';
 import { Alert, Snackbar } from '@mui/material';
+import ViewDetails from './component/productDetails/details';
+import NotFound from './component/notfound/NotFound.jsx';
 
 
 
@@ -79,7 +81,12 @@ const handleClose = () => {
         <Route path="/acceptedOrders" element={<AcceptOrder />} />
         <Route path="/pendingOrders" element={<PendingOrder/>} />
         <Route path="/canceledOrders" element={<CanceledOrder />} />
-        <Route path="/product/:id" element={<ProductDetailsPage />} />
+
+
+        <Route path="/viewdetails/:id" element={<ViewDetails />} />
+
+
+
         <Route path="/login" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
@@ -88,6 +95,8 @@ const handleClose = () => {
         
         <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/cart" element={<ShoppingCart/>} />
+         <Route path="*" element={<NotFound />} />
+
       </Routes>
        <Snackbar
         open={snackbar.open}

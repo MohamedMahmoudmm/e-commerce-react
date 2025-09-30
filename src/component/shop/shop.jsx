@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { toggleFavorite } from "../../redux/reducers/favReducer";
+import { useEffect, useState } from "react";
 import {
   IconButton,
   Grid,
   Box,
   Typography,
-  Card,
-  CardMedia,
-  CardContent,
   Paper,
   Container,
   InputBase,
   Rating,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import { ShoppingCart, Favorite } from "@mui/icons-material";
 
 import { fetchAllProducts, getCategories } from "../../redux/reducers/allProductReducer";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import ProductCard from "../productCard/productCard";
 
 const Sidebar = ({

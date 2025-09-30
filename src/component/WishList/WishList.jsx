@@ -1,18 +1,11 @@
-import React from "react";
 import {
   Container,
   Grid,
-  Card,
-  CardContent,
-  CardMedia,
+  
   Typography,
-  IconButton,
   Box,
-  Button,
-  Rating,
   Paper,
 } from "@mui/material";
-import { ShoppingCart, Close } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import {toggleFavorite} from "../../redux/reducers/favReducer";
 import ProductCard from "../productCard/productCard";
