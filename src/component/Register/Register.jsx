@@ -55,7 +55,7 @@ const Register = () => {
     <>
       <Box
         sx={{
-          bgcolor: '#000000ff',
+          bgcolor: '#042968ff',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           minHeight: '200px',
@@ -70,7 +70,7 @@ const Register = () => {
           variant="h3"
           fontWeight="bold"
           color="#ffffffff"
-          sx={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+          sx={{ textShadow: '2px 2px 4px #051a3dff)' }}
         >
           Sign Up
         </Typography>

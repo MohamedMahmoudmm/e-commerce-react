@@ -18,10 +18,9 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 const ConfirmEmail = () => {
   return (
     <>
-      {/* Title Section with Darkened Background */}
       <Box
         sx={{
-          bgcolor: '#000000ff',
+          bgcolor: '#042968ff',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           minHeight: '200px',

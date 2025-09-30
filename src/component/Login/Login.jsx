@@ -58,7 +58,7 @@ const Login = () => {
   return (
     <>
       <Box sx={{
-        bgcolor: '#000000ff',
+        bgcolor: '#042968ff',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         minHeight: '200px',
@@ -69,7 +69,7 @@ const Login = () => {
         filter: 'brightness(50%)',
       }}>
         <Typography variant="h3" fontWeight="bold" color="#ffffffff" sx={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-          Sign In
+          Login
         </Typography>
       </Box>
 
