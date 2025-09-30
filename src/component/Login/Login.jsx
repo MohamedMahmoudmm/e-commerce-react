@@ -127,7 +127,7 @@ const Login = () => {
                       {loading ? 'Logging in...' : 'Sign In'}
                     </StyledButton>
 
-                    <StyledLink to="/register">Don't have an account? Sign Up</StyledLink>
+                    <StyledLink to="/signup">Don't have an account? Sign Up</StyledLink>
                     
                   </Box>
                 </Form>
