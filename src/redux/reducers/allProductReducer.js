@@ -58,6 +58,9 @@ export const getCategories = () => {
 export const getSingleProduct = (id) => {
   return axiosInstance.get(`/api/products/${id}`);
 }
+export const getCart = () => {
+  return axiosInstance.get(`/cart`);
+}
 const myStore = configureStore({
   reducer: {
     auth: authSlice,      
