@@ -8,14 +8,9 @@ import {
   Card,
   CardMedia,
   CardContent,
-  Paper,
-  Container,
-  InputBase,
-  Rating,
   Snackbar,
   Alert,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import { ShoppingCart, Favorite } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { axiosInstance } from "../../Axios/AxiosInstance";
@@ -110,17 +105,21 @@ export default function ProductCard({ item }) {
             />
           </IconButton>
 
+
           <CardMedia
-            component="img"
-            height="220"
-            image={item.images[0] || ""}
-            alt={item.name}
-            sx={{
-              objectFit: "contain",
-              display: "block",
-              mx: "auto",
-            }}
-          />
+  component="img"
+  image={item.images[0] || ""}
+  alt={item.name}
+  sx={{
+    width: "100%",        // الصورة تملأ عرض الكارد
+    height: "220px",      // نفس الارتفاع لكل الصور
+    objectFit: "cover", // الصورة كلها تظهر بدون قص
+    backgroundColor: "#f9f9f9", // لون خلفية خفيف للفراغات
+    display: "block",
+    mx: "auto",
+  }}
+/>
+
         </Box>
 
         <CardContent sx={{ p: { xs: 3, sm: 2 } }}>
@@ -137,12 +136,7 @@ export default function ProductCard({ item }) {
             {item.name}
           </Typography>
 
-          <Box display="flex" alignItems="center" mb={2}>
-            <Rating value={item.rating || 0} readOnly size="small" />
-            <Typography variant="body2" color="text.secondary" ml={1}>
-              ({item.rating || 0}.0)
-            </Typography>
-          </Box>
+       
 
           <Box
             display="flex"
