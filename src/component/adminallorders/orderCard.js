@@ -28,7 +28,7 @@ function OrderCard({ order }) {
     axiosInstance.put(`orders/${orderId}`, { status: "processing" }).then((res) => {
       dispatch(fetchAllOrders());
       getSocket().emit("order-accepted", {
-        userId: "USER_ID", // the target user
+        userId: userId, // the target user
         message: "Your order has been accepted",
       });
 
@@ -95,7 +95,7 @@ function OrderCard({ order }) {
                 variant="outlined"
                 color="success"
                 size="small"
-                onClick={() => AcceptOrder(order._id, order.userId)}
+                onClick={() => AcceptOrder(order._id, order.userId._id)}
               >
                 accepte order
               </Button>

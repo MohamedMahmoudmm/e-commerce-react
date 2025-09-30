@@ -11,9 +11,9 @@ import CanceledOrder from './component/adminallorders/cancelledOrder';
 import PendingOrder from './component/adminallorders/pendingOrder';
 import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 import IlanaGrocery from './component/shop/shop';
-import Login from './component/Login/Login';
-import Register from './component/Register/Register';
-import WishlistPage from './component/WishList/WishList';
+import Login from './component/login/Login';
+import Register from './component/register/Register';
+import WishlistPage from './component/wishlist/WishList';
 import ShoppingCart from './component/cart/cart';
 import { useEffect, useState } from 'react';
 import { initSocket } from './redux/reducers/socket';
@@ -26,8 +26,8 @@ import ViewDetails from './component/productDetails/details';
 import NotFound from './component/notfound/NotFound.jsx';
 
 function App() {
-  const myId = "USER_ID"; 
-  const myRole = "user";   
+  const myId = localStorage.getItem("userId")??""; 
+  const myRole = localStorage.getItem("role")??"";   
 
   const [snackbar, setSnackbar] = useState({
     open: false,

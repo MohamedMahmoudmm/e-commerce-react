@@ -144,7 +144,7 @@ function placeOrder() {
             severity: "success",
           });
           setCartItems([]);
-      const myId="68b55492d5d84e2d00569838"
+      const myId= localStorage.getItem("userId");
   getSocket().emit("order-placed", {
   userId: myId,
   orderId: res.data.data._id,

@@ -105,21 +105,22 @@ export default function ProductCard({ item }) {
             />
           </IconButton>
 
-
-          <CardMedia
-  component="img"
-  image={item.images[0] || ""}
+<Box sx={{ display: "flex", justifyContent: "center" }}>
+   <img
+  src={item.images[0] || ""}
   alt={item.name}
-  sx={{
+  style={{
     width: "100%",        // الصورة تملأ عرض الكارد
     height: "220px",      // نفس الارتفاع لكل الصور
-    objectFit: "cover", // الصورة كلها تظهر بدون قص
+    objectFit: "contain", // الصورة كلها تظهر بدون قص
     backgroundColor: "#f9f9f9", // لون خلفية خفيف للفراغات
     display: "block",
     mx: "auto",
-  }}
-/>
+  }}/>
 
+
+</Box>
+         
         </Box>
 
         <CardContent sx={{ p: { xs: 3, sm: 2 } }}>
