@@ -20,7 +20,7 @@ const ConfirmEmail = () => {
     <>
       <Box
         sx={{
-          bgcolor: '#042968ff',
+         
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           minHeight: '200px',
@@ -34,8 +34,8 @@ const ConfirmEmail = () => {
         <Typography
           variant="h3"
           fontWeight="bold"
-          color="#ffffffff"
-          sx={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
+          color="#000000ff"
+          sx={{ textShadow: '2px 2px 4px rgba(0,0,0,1)' }}
         >
           Confirm Your Email
         </Typography>
