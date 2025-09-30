@@ -92,13 +92,13 @@ const Register = () => {
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], 'Passwords must match')
       .required('Required'),
-    age: Yup.number().min(1, 'Age must be positive').nullable(), // Age optional
+    age: Yup.number().min(1, 'Age must be positive').nullable(), 
   })}
   onSubmit={(values, { setSubmitting }) => {
-    const { confirmPassword, ...data } = values; // remove confirmPassword
+    const { confirmPassword, ...data } = values; 
     const payload = {
       ...data,
-      role: 'user', // ثابت
+      role: 'user', 
       age: data.age ? Number(data.age) : undefined,
     };
 
@@ -166,7 +166,6 @@ const Register = () => {
           helperText={touched.age && errors.age}
         />
 
-        {/* عرض أي خطأ من الباك */}
         {error && (
           <Typography color="error" sx={{ mt: 1 }}>
             {typeof error === 'string' ? error : JSON.stringify(error)}
