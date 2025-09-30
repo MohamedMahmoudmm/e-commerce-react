@@ -24,9 +24,9 @@ export const registerUser = createAsyncThunk(
       return res.data; // { message, user }
     } catch (error) {
       const message =
-        error.response?.data?.message || 
-        error.response?.data?.error || 
-        error.message || 
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
         "Something went wrong";
       return rejectWithValue(message);
     }
@@ -64,6 +64,26 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
+// Thunk جديد للوج اوت
+export const logoutUser = createAsyncThunk(
+  "auth/logoutUser",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const token = getState().auth.token;
+      if (!token) return;
+
+      const res = await axiosInstance.post(
+        "/user/logout",
+        {},
+        { headers: { token } }
+      );
+      return res.data; // { message: "User logged out successfully" }
+    } catch (error) {
+      const message = error.response?.data?.message || "Something went wrong";
+      return rejectWithValue(message);
+    }
+  }
+);
 
 const authSlice = createSlice({
   name: "auth",
@@ -111,7 +131,24 @@ const authSlice = createSlice({
         state.error = action.payload;
       });
 
-         // forgotPassword
+    // logoutUser
+    builder
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.token = null;
+        state.role = null;
+        state.userId = null;
+        state.error = null;
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        localStorage.removeItem("userId");
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.error = action.payload;
+      });
+
+    // forgotPassword
     builder
       .addCase(forgotPassword.pending, (state) => {
         state.loading = true;
@@ -120,7 +157,7 @@ const authSlice = createSlice({
       })
       .addCase(forgotPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message; // السيرفر بيرجع {message}
+        state.message = action.payload.message;
       })
       .addCase(forgotPassword.rejected, (state, action) => {
         state.loading = false;
@@ -136,7 +173,7 @@ const authSlice = createSlice({
       })
       .addCase(resetPassword.fulfilled, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message; // السيرفر بيرجع {message}
+        state.message = action.payload.message;
       })
       .addCase(resetPassword.rejected, (state, action) => {
         state.loading = false;
@@ -153,7 +190,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload.user[0];
         state.token = action.payload.user[0]?.token || null;
-        state.role = action.payload.user[0]?.role || 'user';
+        state.role = action.payload.user[0]?.role || "user";
         state.userId = action.payload.user[0]?._id || null;
 
         if (state.token) localStorage.setItem("token", state.token);

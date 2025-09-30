@@ -7,7 +7,7 @@ import authSlice from './authReducer';
 export const fetchAllProducts = createAsyncThunk(
   "GetProducts/fetchAllProducts",
   async () => {
-    const res = await axiosInstance.get("api/products");
+    const res = await axiosInstance.get("api/products?page&limit");
     return res.data.products;
   }
 );
@@ -55,6 +55,9 @@ const allProduct = createSlice({
 export const getCategories = () => {
   return axiosInstance.get("/categories"); 
 };
+export const getSingleProduct = (id) => {
+  return axiosInstance.get(`/api/products/${id}`);
+}
 const myStore = configureStore({
   reducer: {
     auth: authSlice,      
