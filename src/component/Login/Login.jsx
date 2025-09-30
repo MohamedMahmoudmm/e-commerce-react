@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '../../redux/reducers/authReducer';
 
-// Styles
+
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   display: 'flex',
@@ -87,7 +87,6 @@ const Login = () => {
                 dispatch(loginUser(values))
                   .unwrap()
                   .then((res) => {
-                    // Redirect based on role
                     if (res.user?.role === 'admin') navigate('/dash');
                     else navigate('/home');
                   })
