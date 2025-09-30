@@ -1,18 +1,21 @@
-// ForgotPassword.js
 import React from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { TextField, Button, Box, Typography, Container, Paper } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { TextField, Button, Typography, Container, Paper, styled } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { forgotPassword } from "../../redux/reducers/authReducer";
 
 const StyledPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
   maxWidth: 400,
   margin: "auto",
-  marginTop: theme.spacing(4),
+  marginTop: theme.spacing(10),
+  boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
   borderRadius: "10px",
+  backgroundColor: "rgba(255,255,255,0.9)",
 }));
 
 const ForgotSchema = Yup.object().shape({
@@ -25,9 +28,9 @@ const ForgotPassword = () => {
   const [success, setSuccess] = React.useState("");
 
   return (
-    <Container maxWidth="xs">
+    <Container maxWidth="xs" sx={{ mt: 8 }}>
       <StyledPaper>
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" gutterBottom align="center">
           Forgot Password
         </Typography>
 
@@ -61,7 +64,7 @@ const ForgotPassword = () => {
                 fullWidth
                 variant="contained"
                 disabled={isSubmitting || loading}
-                sx={{ mt: 2 }}
+                sx={{ mt: 2, bgcolor: "#ff7b00" }}
               >
                 {loading ? "Sending..." : "Send Reset Link"}
               </Button>

@@ -9,31 +9,31 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // ✅ ضفنا useLocation
 import { useSelector, useDispatch } from "react-redux";
-import { logout, logoutUser } from "../../redux/reducers/authReducer"; // import reducer
+import { logout, logoutUser } from "../../redux/reducers/authReducer";
 
 export default function NavBar() {
-  const { token } = useSelector((state) => state.auth); // نجيب التوكن من الريدكس
+  const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ عشان نعرف إحنا فين
 
-const handleLogout = () => {
-  dispatch(logoutUser()).then(() => {
-    navigate("/login");
-  });
-};
+  const handleLogout = () => {
+    dispatch(logoutUser()).then(() => {
+      navigate("/login");
+    });
+  };
 
   return (
     <>
-      {/* Navbar */}
       <AppBar
         position="absolute"
         sx={{ background: "transparent", boxShadow: "none", color: "white" }}
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-            {/* Logo */}
+
             <Typography
               variant="h6"
               sx={{ fontWeight: "bold", cursor: "pointer" }}
@@ -41,7 +41,7 @@ const handleLogout = () => {
               Panto
             </Typography>
 
-            {/* Links */}
+
             <Box sx={{ display: "flex", gap: 4 }}>
               {["Home", "Shop", "About Us", "Contact"].map((item) => (
                 <Button
@@ -52,11 +52,11 @@ const handleLogout = () => {
                     color: "white",
                     fontWeight: 500,
                     textTransform: "none",
-                    transition: "transform 0.3s ease", // smooth animation
+                    transition: "transform 0.3s ease",
                     "&:hover": {
                       transform: "scale(1.05)",
-                      bgcolor: "#ff7b00", // enlarge by 5% on hover
-                      boxShadow: 4, // add some elevation on hover
+                      bgcolor: "#ff7b00",
+                      boxShadow: 4,
                     },
                   }}
                 >
@@ -77,14 +77,38 @@ const handleLogout = () => {
               {token ? (
                 <Button
                   variant="contained"
-                  color="error"
                   onClick={handleLogout}
                   sx={{
                     textTransform: "none",
                     fontWeight: "bold",
+                    backgroundColor: "#ff7b00",  
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#e56e00", 
+                    },
                   }}
                 >
                   Logout
+                </Button>
+              ) : location.pathname === "/login" ? (
+                <Button
+                  component={Link}
+                  to="/signup"   
+                  variant="contained"
+                  color="success"
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
+                >
+                  Register
+                </Button>
+              ) : location.pathname === "/signup" ? (   
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="contained"
+                  color="success"
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
+                >
+                  Login
                 </Button>
               ) : (
                 <Button
@@ -92,14 +116,12 @@ const handleLogout = () => {
                   to="/login"
                   variant="contained"
                   color="success"
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: "bold",
-                  }}
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
                 >
                   Login
                 </Button>
               )}
+
             </Box>
           </Toolbar>
         </Container>

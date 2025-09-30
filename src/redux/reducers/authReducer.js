@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosInstance } from "../../Axios/AxiosInstance";
 
-// تسجيل الدخول
+
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/user/login", userData);
-      return res.data; // { token, user }
+      return res.data; 
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       return rejectWithValue(message);
@@ -15,13 +15,12 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// تسجيل مستخدم جديد
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (userData, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/user/signup", userData);
-      return res.data; // { message, user }
+      return res.data; 
     } catch (error) {
       const message =
         error.response?.data?.message ||
@@ -33,13 +32,13 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// طلب إرسال لينك reset
+
 export const forgotPassword = createAsyncThunk(
   "auth/forgotPassword",
   async (email, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/user/forgot-password", { email });
-      return res.data; // { message }
+      return res.data; 
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       return rejectWithValue(message);
@@ -47,7 +46,7 @@ export const forgotPassword = createAsyncThunk(
   }
 );
 
-// إعادة تعيين الباسورد
+
 export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
   async ({ token, newPassword }, { rejectWithValue }) => {
@@ -56,7 +55,7 @@ export const resetPassword = createAsyncThunk(
         token,
         newPassword,
       });
-      return res.data; // { message }
+      return res.data; 
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       return rejectWithValue(message);
@@ -64,7 +63,7 @@ export const resetPassword = createAsyncThunk(
   }
 );
 
-// Thunk جديد للوج اوت
+
 export const logoutUser = createAsyncThunk(
   "auth/logoutUser",
   async (_, { getState, rejectWithValue }) => {
@@ -77,7 +76,7 @@ export const logoutUser = createAsyncThunk(
         {},
         { headers: { token } }
       );
-      return res.data; // { message: "User logged out successfully" }
+      return res.data;
     } catch (error) {
       const message = error.response?.data?.message || "Something went wrong";
       return rejectWithValue(message);
@@ -108,7 +107,7 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // login
+
     builder
       .addCase(loginUser.pending, (state) => {
         state.loading = true;
@@ -121,7 +120,7 @@ const authSlice = createSlice({
         state.role = action.payload.user?.role;
         state.userId = action.payload.user?._id;
 
-        // تخزين في localStorage
+        // localStorage
         localStorage.setItem("token", state.token);
         localStorage.setItem("role", state.role);
         localStorage.setItem("userId", state.userId);
