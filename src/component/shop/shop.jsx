@@ -7,7 +7,7 @@ import {
   Paper,
   Container,
   InputBase,
-  Rating,
+  Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
@@ -15,11 +15,7 @@ import { fetchAllProducts, getCategories } from "../../redux/reducers/allProduct
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../productCard/productCard";
 
-const Sidebar = ({
-  categories = [],
-  onFilterChange,
-  selectedCategories = [],
-}) => (
+const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) => (
   <Box
     sx={{
       width: { xs: "100%", md: "250px" },
@@ -55,37 +51,53 @@ const Sidebar = ({
 const IlanaGrocery = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // 🆕 search state
+  const [searchTerm, setSearchTerm] = useState("");
+  const [page, setPage] = useState(1); // 📌 صفحة حالية
+  const [limit] = useState(8); // 📌 عدد المنتجات لكل صفحة
+
   const allProduct = useSelector((state) => state.allProduct.All_Product || []);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchAllProducts());
-    // axios.get("http://127.0.0.1:3000/categories")
-      getCategories().then((res) => setCategories(res.data.data || []))
+    getCategories()
+      .then((res) => setCategories(res.data.data || []))
       .catch((err) => console.log(err));
   }, [dispatch]);
 
+
+
+
+
+
+  
   const handleFilterChange = (catId, checked) => {
     if (checked) {
       setSelectedCategories((prev) => [...prev, catId]);
     } else {
       setSelectedCategories((prev) => prev.filter((c) => c !== catId));
     }
+    setPage(1); // إعادة ضبط الصفحة عند تغيير الفلتر
   };
 
-  // الفلترة بالكاتيجوري
   let filteredProducts =
     selectedCategories.length > 0
       ? allProduct.filter((p) => selectedCategories.includes(p.category?._id))
       : allProduct;
 
-  // 🆕 الفلترة بالسيرش
   if (searchTerm.trim() !== "") {
     filteredProducts = filteredProducts.filter((p) =>
       p.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }
+
+  const totalPages = Math.ceil(filteredProducts.length / limit);
+  const startIndex = (page - 1) * limit;
+  const paginatedProducts = filteredProducts.slice(startIndex, startIndex + limit);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <Box
@@ -109,7 +121,7 @@ const IlanaGrocery = () => {
       >
         <Paper
           component="form"
-          onSubmit={(e) => e.preventDefault()} // 🛑 منع الريلود
+          onSubmit={(e) => e.preventDefault()}
           sx={{
             p: "2px 4px",
             display: "flex",
@@ -123,7 +135,7 @@ const IlanaGrocery = () => {
           <InputBase
             sx={{ ml: 3, flex: 1, color: "white" }}
             placeholder="Search"
-            value={searchTerm} // 🆕 مربوط بالستيت
+            value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <IconButton
@@ -152,14 +164,65 @@ const IlanaGrocery = () => {
           <Container maxWidth="xl">
             <Box textAlign="center" mb={3}>
               <Typography variant="h3" color="#2c2c2cff">
-                find your best product
+                Find your best product
               </Typography>
             </Box>
+
             <Grid container spacing={3} justifyContent="center">
-              {filteredProducts.map((item) => (
+              {paginatedProducts.map((item) => (
                 <ProductCard key={item._id} item={item} />
               ))}
             </Grid>
+
+            {/* Pagination Buttons */}
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
+  <Button
+    disabled={page === 1}
+    onClick={() => handlePageChange(page - 1)}
+    sx={{
+      mx: 1,
+      bgcolor: "#ff7b00",
+      color: "white",
+      "&:hover": { bgcolor: "#e66e00" }, // لون أغمق عند الهوفر
+      "&.Mui-disabled": { bgcolor: "#ff7b00", opacity: 0.5 }, // زرار disabled
+    }}
+  >
+    Previous
+  </Button>
+
+  {[...Array(totalPages)].map((_, idx) => (
+    <Button
+      key={idx}
+      onClick={() => handlePageChange(idx + 1)}
+      sx={{
+        mx: 0.5,
+        bgcolor: page === idx + 1 ? "#ff7b00" : "transparent",
+        color: page === idx + 1 ? "white" : "#ff7b00",
+        border: "1px solid #ff7b00",
+        "&:hover": {
+          bgcolor: page === idx + 1 ? "#e66e00" : "rgba(255,123,0,0.1)",
+        },
+      }}
+    >
+      {idx + 1}
+    </Button>
+  ))}
+
+  <Button
+    disabled={page === totalPages}
+    onClick={() => handlePageChange(page + 1)}
+    sx={{
+      mx: 1,
+      bgcolor: "#ff7b00",
+      color: "white",
+      "&:hover": { bgcolor: "#e66e00" },
+      "&.Mui-disabled": { bgcolor: "#ff7b00", opacity: 0.5 },
+    }}
+  >
+    Next
+  </Button>
+</Box>
+
           </Container>
         </Paper>
       </Box>
