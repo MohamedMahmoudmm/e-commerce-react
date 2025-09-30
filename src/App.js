@@ -15,15 +15,16 @@ import AdminAllProduct from './component/adminDashboard/AdminAllProduct';
 import IlanaGrocery from './component/shop/shop';
 import Login from './component/Login/Login';
 import Register from './component/Register/Register';
-import WishlistPage from './component/wishlist/WishList.jsx';
+// import WishlistPage from './component/ًWishlist/WishList.jsx';
 import ShoppingCart from './component/cart/cart';
 import { useEffect, useState } from 'react';
 import { initSocket } from './redux/reducers/socket';
-import ConfirmEmail from './component/register/confirmMail.jsx';
+import ConfirmEmail from './component/Register/confirmMail.jsx';
 import ResetPassword from './component/resetPass/resetPassword.jsx';
 import ForgotPassword from './component/resetPass/forgetPassword.jsx';
 import { Alert, Snackbar } from '@mui/material';
 import ProtectedRoute from './component/ProtectedRoute.js';
+import WishlistPage from './component/WishList/WishList';
 
 function App() {
   const myId = "USER_ID"; 
