@@ -2,6 +2,7 @@ import { configureStore, createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { axiosInstance } from '../../Axios/AxiosInstance';
 import allOrders from './allOrderReducer';
 import favoriteReducer from './favReducer';
+import languageSlice from './langReducer';
 import authSlice from './authReducer';
 // Async thunk for fetching products
 export const fetchAllProducts = createAsyncThunk(
@@ -64,6 +65,7 @@ const myStore = configureStore({
     allProduct: allProduct.reducer,
     allOrders,
     favorite: favoriteReducer,
+    language: languageSlice
   },
 });
 

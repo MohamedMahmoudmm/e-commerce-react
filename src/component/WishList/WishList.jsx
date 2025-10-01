@@ -15,6 +15,7 @@ import ProductCard from "../productCard/productCard";
 
 const WishlistPage = () => {
   const wishlistItems = useSelector((state) => state.favorite.items);
+const { translations, lang } = useSelector((state) => state.language);
     const dispatch = useDispatch();
   const handleRemove = (item) => {
     dispatch(toggleFavorite(item));
@@ -36,7 +37,7 @@ const WishlistPage = () => {
     color="white" // Text color
     sx={{ paddingBottom: '20px' }}
   >
-    My Wishlist
+   {translations?.Wish}
   </Typography>
 </Box>
     <Paper elevation={0} sx={{ minHeight: "100vh", py: 4,pt:10,   background: ", #ffffffff 100%)" }}>
@@ -44,7 +45,7 @@ const WishlistPage = () => {
         {/* Header */}
            <Box textAlign="center" mb={3}>
           <Typography variant="h6" color='#2c2c2cff'>
-            Your favorite items all in one place
+           {translations?.Wishlist}
           </Typography>
         </Box>
         <Grid container spacing={3} justifyContent="center">

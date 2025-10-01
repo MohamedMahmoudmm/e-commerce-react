@@ -15,7 +15,12 @@ import { fetchAllProducts, getCategories } from "../../redux/reducers/allProduct
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../productCard/productCard";
 
-const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) => (
+const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) => {
+    const { translations, lang } = useSelector((state) => state.language);
+  const dispatch = useDispatch();
+return(
+
+
   <Box
     sx={{
       width: { xs: "100%", md: "250px" },
@@ -26,10 +31,10 @@ const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) =
       mb: { xs: 2, md: 0 },
     }}
   >
-    <Typography variant="h6">Filters</Typography>
+    <Typography variant="h6">{translations?.Filters}</Typography>
 
     <Box sx={{ mt: 2 }}>
-      <Typography>Category</Typography>
+      <Typography>{translations?.Category}</Typography>
       {categories.map((cat) => (
         <Box key={cat._id}>
           <input
@@ -47,6 +52,7 @@ const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) =
     </Box>
   </Box>
 );
+}
 
 const IlanaGrocery = () => {
   const [categories, setCategories] = useState([]);
@@ -54,6 +60,7 @@ const IlanaGrocery = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1); // 📌 صفحة حالية
   const [limit] = useState(8); // 📌 عدد المنتجات لكل صفحة
+const { translations, lang } = useSelector((state) => state.language);
 
   const allProduct = useSelector((state) => state.allProduct.All_Product || []);
   const dispatch = useDispatch();
@@ -164,7 +171,7 @@ const IlanaGrocery = () => {
           <Container maxWidth="xl">
             <Box textAlign="center" mb={3}>
               <Typography variant="h3" color="#2c2c2cff">
-                Find your best product
+                {translations?.Best}
               </Typography>
             </Box>
 

@@ -21,6 +21,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import axios from "axios";
 import { axiosInstance } from "../../Axios/AxiosInstance";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 function SampleNextArrow(props) {
     const { onClick } = props;
@@ -64,6 +65,8 @@ export default function BestSeller() {
     const [category, setCategory] = useState(null);
 const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
+      const { translations, lang } = useSelector((state) => state.language);
+  const dispatch = useDispatch();
     const handleCategoryChange = (event, newCategory) => {
         if (newCategory) setCategory(newCategory);
         console.log(newCategory);
@@ -136,7 +139,7 @@ const [snackbar, setSnackbar] = useState({
         <Box sx={{ py: 8, textAlign: "center",bgcolor: "#F7F7F7" }}>
             {/* Title */}
             <Typography variant="h4" fontWeight="bold" mb={4}>
-                Best Selling Product
+                {translations?.Seller}
             </Typography>
 
             {/* Categories */}
