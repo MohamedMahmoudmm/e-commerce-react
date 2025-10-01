@@ -94,17 +94,18 @@ function AdminAllProduct() {
         >
           {/* Image section */}
           <Box sx={{ display: "flex", justifyContent: "center" }}>
-            <CardMedia
-              component="img"
-              image={product.images[0]}
-              alt={product.name}
-              sx={{
-                height: 200,
-                objectFit: "cover",
-                p: 2,
-                bgcolor: "#F7F7F7",
-              }}
-            />
+         <CardMedia
+          component="img"
+          image={product.images[0]}
+          alt={product.name}
+          sx={{
+            width: 180,     // الصورة تاخد عرض الكارد
+            height: 200,       // ارتفاع ثابت لكل الصور
+            objectFit: "contain", // يخلي الصورة تملى المساحة بشكل منظم
+            borderRadius: "12px",
+            bgcolor: "#F7F7F7",
+          }}
+        />
           </Box>
 
           {/* Content section fills remaining space */}

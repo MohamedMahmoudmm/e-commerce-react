@@ -17,7 +17,7 @@ export default function ExperienceSection() {
             
             <CardMedia
               component="img"
-              image="./exp.png"
+              image="./exp1.jpg"
               alt="Experience"
               sx={{
                 width: "100%",
@@ -53,7 +53,7 @@ export default function ExperienceSection() {
           </Typography>
 
           <Link
-            href="#"
+            href="/about"
             underline="none"
             sx={{
               color: "orange",
