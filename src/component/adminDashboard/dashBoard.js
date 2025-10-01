@@ -114,7 +114,7 @@ const Dashboard = () => {
               color: "#1d4ed8", 
               gradient: "linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)",
               icon: <AddIcon sx={{ fontSize: { xs: 40, sm: 50, md: 60 } }} />,
-              route: "" 
+              route: "/addproduct" 
             },
           ].map((item, index) => (
             <Grid item xs={12} sm={6} md={6} lg={3} key={index}>
