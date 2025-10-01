@@ -24,6 +24,8 @@ import { Alert, Snackbar } from '@mui/material';
 import ProtectedRoute from './component/ProtectedRoute.js';
 import ViewDetails from './component/productDetails/details';
 import NotFound from './component/notfound/NotFound.jsx';
+import AboutUs from './component/about/AboutUs.jsx';
+import ContactUs from './component/contact/ContactUs';
 
 function App() {
   const myId = localStorage.getItem("userId")??""; 
@@ -89,7 +91,8 @@ function App() {
           <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
           <Route path="/cart" element={<ProtectedRoute><ShoppingCart /></ProtectedRoute>} />
           <Route path="/viewdetails/:id" element={<ProtectedRoute><ViewDetails /></ProtectedRoute>} />
-          
+          <Route path="/contact" element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
+          <Route path="/about" element={<ProtectedRoute><AboutUs/></ProtectedRoute>} />
           <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
         </Routes>
 
