@@ -5,6 +5,16 @@ import { useNavigate } from "react-router-dom";
 export default function NotFound() {
   const navigate = useNavigate();
 
+  const handleGoHome = () => {
+    const role = localStorage.getItem("role"); 
+
+    if (role === "admin") {
+      navigate("/dash"); 
+    } else {
+      navigate("/home");   
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -27,14 +37,15 @@ export default function NotFound() {
       </Typography>
 
       <Typography variant="body1" sx={{ mb: 3, maxWidth: 500 }}>
-        Sorry, the page you are looking for does not exist. It might have been removed, had its name changed, or is temporarily unavailable.
+        Sorry, the page you are looking for does not exist. It might have been
+        removed, had its name changed, or is temporarily unavailable.
       </Typography>
 
       <Button
         variant="contained"
         color="primary"
         sx={{ borderRadius: 3, px: 4, py: 1.5 }}
-        onClick={() => navigate("/")}
+        onClick={handleGoHome} 
       >
         Go to Home
       </Button>

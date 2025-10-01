@@ -26,6 +26,7 @@ import ViewDetails from './component/productDetails/details';
 import NotFound from './component/notfound/NotFound.jsx';
 import AboutUs from './component/about/AboutUs.jsx';
 import ContactUs from './component/contact/ContactUs';
+import AddProduct from './component/adminDashboard/addProduct.js';
 
 function App() {
   const myId = localStorage.getItem("userId")??""; 
@@ -84,6 +85,7 @@ function App() {
           <Route path="/shop" element={<ProtectedRoute><IlanaGrocery /></ProtectedRoute>} />
           <Route path="/dash" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/adminAllProduct" element={<ProtectedRoute><AdminAllProduct /></ProtectedRoute>} />
+          <Route path='/addproduct' element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
           <Route path="/orders" element={<ProtectedRoute><OrdersList /></ProtectedRoute>} />
           <Route path="/acceptedOrders" element={<ProtectedRoute><AcceptOrder /></ProtectedRoute>} />
           <Route path="/pendingOrders" element={<ProtectedRoute><PendingOrder /></ProtectedRoute>} />
