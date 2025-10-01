@@ -44,7 +44,10 @@ export default function NavBar() {
               Panto
             </Typography>
 
-
+     {/* //links */}
+     {
+      localStorage.getItem("role")!=="admin"&&
+    <>
             <Box sx={{ display: "flex", gap: 4 }}>
               {routes[lang].map((item) => (
                 <Button
@@ -67,8 +70,6 @@ export default function NavBar() {
                 </Button>
               ))}
             </Box>
-
-            {/* Cart + Wishlist + Auth + Language */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
               {/* Language Switch */}
               <Button
@@ -94,7 +95,15 @@ export default function NavBar() {
                 <ShoppingCartIcon />
               </IconButton>
 
-              {token ? (
+           
+
+            </Box>
+            </>
+ }
+
+            {/* Auth */}
+<Box>
+     {token ? (
                 <Button
                   variant="contained"
                   onClick={handleLogout}
@@ -141,8 +150,9 @@ export default function NavBar() {
                   {translations?.Login || "Login"}
                 </Button>
               )}
+</Box>
 
-            </Box>
+
           </Toolbar>
         </Container>
       </AppBar>

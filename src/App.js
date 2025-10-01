@@ -68,6 +68,7 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
+      
         <NavBar />
         <Routes>
           <Route path="/login" element={<Login />} />
