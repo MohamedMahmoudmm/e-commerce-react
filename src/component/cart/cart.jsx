@@ -32,6 +32,7 @@ import { getSocket } from "../../redux/reducers/socket";
 import { axiosInstance } from '../../Axios/AxiosInstance';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { getCart } from '../../redux/reducers/allProductReducer';
 
 
 
