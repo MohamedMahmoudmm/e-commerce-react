@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // ✅ ضفنا useLocation
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/reducers/authReducer"; 
 import { switchLanguage } from "../../redux/reducers/langReducer";
@@ -20,6 +20,7 @@ export default function NavBar() {
   const { translations, lang } = useSelector((state) => state.language);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ عشان نعرف إحنا فين
 
   const handleLogout = () => {
     dispatch(logoutUser()).then(() => {
@@ -29,14 +30,13 @@ export default function NavBar() {
 
   return (
     <>
-      {/* Navbar */}
       <AppBar
         position="absolute"
         sx={{ background: "transparent", boxShadow: "none", color: "white" }}
       >
         <Container maxWidth="xl">
           <Toolbar disableGutters sx={{ justifyContent: "space-between" }}>
-            {/* Logo */}
+
             <Typography
               variant="h6"
               sx={{ fontWeight: "bold", cursor: "pointer" }}
@@ -44,7 +44,7 @@ export default function NavBar() {
               Panto
             </Typography>
 
-            {/* Links */}
+
             <Box sx={{ display: "flex", gap: 4 }}>
               {routes[lang].map((item) => (
                 <Button
@@ -97,14 +97,38 @@ export default function NavBar() {
               {token ? (
                 <Button
                   variant="contained"
-                  color="error"
                   onClick={handleLogout}
                   sx={{
                     textTransform: "none",
                     fontWeight: "bold",
+                    backgroundColor: "#ff7b00",  
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#e56e00", 
+                    },
                   }}
                 >
                   {translations?.Logout || "Logout"}
+                </Button>
+              ) : location.pathname === "/login" ? (
+                <Button
+                  component={Link}
+                  to="/signup"   
+                  variant="contained"
+                  color="success"
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
+                >
+                  Register
+                </Button>
+              ) : location.pathname === "/signup" ? (   
+                <Button
+                  component={Link}
+                  to="/login"
+                  variant="contained"
+                  color="success"
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
+                >
+                  Login
                 </Button>
               ) : (
                 <Button
@@ -112,14 +136,12 @@ export default function NavBar() {
                   to="/login"
                   variant="contained"
                   color="success"
-                  sx={{
-                    textTransform: "none",
-                    fontWeight: "bold",
-                  }}
+                  sx={{ textTransform: "none", fontWeight: "bold" }}
                 >
                   {translations?.Login || "Login"}
                 </Button>
               )}
+
             </Box>
           </Toolbar>
         </Container>

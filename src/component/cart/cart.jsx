@@ -30,7 +30,10 @@ import {
 } from '@mui/icons-material';
 import { getSocket } from "../../redux/reducers/socket";
 import { axiosInstance } from '../../Axios/AxiosInstance';
+
 import { useDispatch, useSelector } from 'react-redux';
+
+
 
 const ShoppingCart = () => {
   const theme = useTheme();
@@ -54,7 +57,7 @@ const [subTotal, setSubTotal] = useState(0);
   };
 useEffect(() => {
  
-  axiosInstance.get("cart").then((res) => {
+ getCart().then((res) => {
     console.log(res.data);
     setCartItems(res.data.data.items);
     setCartId(res.data.data._id);

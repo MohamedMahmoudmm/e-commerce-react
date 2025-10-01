@@ -89,7 +89,7 @@ function App() {
           <Route path="/cart" element={<ProtectedRoute><ShoppingCart /></ProtectedRoute>} />
           <Route path="/viewdetails/:id" element={<ProtectedRoute><ViewDetails /></ProtectedRoute>} />
           
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
         </Routes>
 
         <Snackbar
