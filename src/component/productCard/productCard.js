@@ -130,6 +130,7 @@ export default function ProductCard({ item }) {
         </Typography>
 
         <IconButton
+        disabled={item.stock<1? true : false}
           onClick={(e) => AddToCart(item._id, e)}
           sx={{
             bgcolor: "#051a3dff",

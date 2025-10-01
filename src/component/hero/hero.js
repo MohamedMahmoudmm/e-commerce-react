@@ -31,7 +31,7 @@ const { translations, lang } = useSelector((state) => state.language);
       {/* Hero Section */}
       <Box
   sx={{
-    backgroundImage: "url('./sofa.png')",
+    backgroundImage: "url('./back2.png')",
     backgroundSize: "cover",       // make image cover entire box
     backgroundRepeat: "no-repeat", // prevent tiling
     backgroundPosition: "center",  // center the image
