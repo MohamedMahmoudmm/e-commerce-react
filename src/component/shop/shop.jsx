@@ -18,6 +18,7 @@ import ProductCard from "../productCard/productCard";
 const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) => {
     const { translations, lang } = useSelector((state) => state.language);
   const dispatch = useDispatch();
+  
 return(
 
 

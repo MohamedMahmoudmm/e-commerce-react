@@ -8,7 +8,7 @@ import authSlice from './authReducer';
 export const fetchAllProducts = createAsyncThunk(
   "GetProducts/fetchAllProducts",
   async () => {
-    const res = await axiosInstance.get("api/products?page&limit");
+    const res = await axiosInstance.get("api/products");
     return res.data.products;
   }
 );
