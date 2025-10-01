@@ -30,7 +30,10 @@ import {
 } from '@mui/icons-material';
 import { getSocket } from "../../redux/reducers/socket";
 import { axiosInstance } from '../../Axios/AxiosInstance';
-import { getCart } from '../../redux/reducers/allProductReducer';
+
+import { useDispatch, useSelector } from 'react-redux';
+
+
 
 const ShoppingCart = () => {
   const theme = useTheme();
@@ -40,13 +43,15 @@ const [subTotal, setSubTotal] = useState(0);
  const [total,setTotal] =useState(0);
  const [qty, setQty] = useState(1);
  const [cartId, setCartId] = useState("");
-
+  
+  
  const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success", // "error" | "warning" | "info" | "success"
   });
-
+ const { translations, lang } = useSelector((state) => state.language);
+   const dispatch = useDispatch();
   const handleClose = () => {
     setSnackbar({ ...snackbar, open: false });
   };
@@ -138,6 +143,7 @@ function removeItem(productId) {
 
 //////////////////////////////
 function placeOrder() {
+  
   axiosInstance.post("cart/order", { shippingAddress: "fayoum" }).then((res) => {
     setSnackbar({
             open: true,
@@ -184,32 +190,35 @@ function placeOrder() {
   const couponDiscount = -100.00;
  
 
-  const OrderSummary = () => (
-    <Card sx={{ height: 'fit-content', boxShadow: 3 }}>
+  const OrderSummary = () => {
+  const { translations, lang } = useSelector((state) => state.language);
+  const dispatch = useDispatch();
+    return(
+      <Card sx={{ height: 'fit-content', boxShadow: 3 }}>
       <CardContent sx={{ p: 3 }}>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 600, mb: 3 }}>
-          Order Summary
+         {translations?.Order_Summary}
         </Typography>
         
         <Box sx={{ mb: 3 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Items</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>{translations?.Items}</Typography>
             <Typography sx={{ fontWeight: 500 }}>{cartItems.length}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Sub Total</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>{translations?.Subtotal}</Typography>
             <Typography sx={{ fontWeight: 500 }}>${subTotal.toFixed(2)}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Shipping</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>{translations?.Shipping}</Typography>
             <Typography sx={{ fontWeight: 500 }}>${shipping.toFixed(2)}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Taxes</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>{translations?.Tax}</Typography>
             <Typography sx={{ fontWeight: 500 }}>${taxes.toFixed(2)}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>Coupon Discount</Typography>
+            <Typography color="text.secondary" sx={{ fontSize: '14px' }}>{translations?.Coupon_Discount}</Typography>
             <Typography sx={{ fontWeight: 500, color: 'success.main' }}>
               ${couponDiscount.toFixed(2)}
             </Typography>
@@ -219,7 +228,7 @@ function placeOrder() {
         <Divider sx={{ mb: 3 }} />
         
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 4 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600 }}>Total</Typography>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>{translations?.Total}</Typography>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>${total.toFixed(2)}</Typography>
         </Box>
         
@@ -237,12 +246,20 @@ function placeOrder() {
             fontWeight: 600
           }}
           onClick={placeOrder}
-        >
-          Proceed to Checkout
+          >
+          {translations?.Checkout}
         </Button>
       </CardContent>
     </Card>
   );
+}
+
+
+
+
+
+
+
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
@@ -263,7 +280,7 @@ function placeOrder() {
                 fontSize: { xs: '2rem', md: '2.5rem' }
               }}
             >
-              Shopping Cart
+                {translations?.Shopping_Cart}
             </Typography>
             <Breadcrumbs 
               separator="/" 
@@ -377,7 +394,7 @@ function placeOrder() {
                           py: 2
                         }}
                       >
-                        Product
+                        {translations?.Product}
                       </TableCell>
                       <TableCell 
                         align="center"
@@ -388,7 +405,7 @@ function placeOrder() {
                           py: 2
                         }}
                       >
-                        Price
+                        {translations?.Price}
                       </TableCell>
                       <TableCell 
                         align="center"
@@ -399,7 +416,7 @@ function placeOrder() {
                           py: 2
                         }}
                       >
-                        Quantity
+                        {translations?.Quantity}
                       </TableCell>
                       <TableCell 
                         align="center"
@@ -410,7 +427,7 @@ function placeOrder() {
                           py: 2
                         }}
                       >
-                        Subtotal
+                        {translations?.Subtotal}
                       </TableCell>
                       <TableCell sx={{ width: 50 }}></TableCell>
                     </TableRow>

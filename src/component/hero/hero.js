@@ -6,11 +6,28 @@ import {
   Paper,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-
+import { useSelector, useDispatch } from "react-redux";
+import { switchLanguage } from "../../redux/reducers/langReducer";
+import languageSlice from "../../redux/reducers/langReducer";
 export default function HeroSection() {
+
+const { translations, lang } = useSelector((state) => state.language);
+  const dispatch = useDispatch();
   return (
     <>
-      
+       {/* <h1>{translations.welcome}</h1>
+      <button
+        onClick={() => dispatch(switchLanguage("en"))}
+        disabled={lang === "en"}
+      >
+        English
+      </button>
+      <button
+        onClick={() => dispatch(switchLanguage("ar"))}
+        disabled={lang === "ar"}
+      >
+        العربية
+      </button> */}
       {/* Hero Section */}
       <Box
   sx={{
@@ -38,15 +55,14 @@ export default function HeroSection() {
             mt:10
           }}
         >
-          Make Your Interior More Minimalistic & Modern
+          {translations.welcome}
         </Typography>
 
         <Typography
           variant="subtitle1"
           sx={{ color: "gray", maxWidth: "500px", mb: 4 }}
         >
-          Turn your room with panto into a lot more minimalist and modern with
-          ease and speed
+          {translations.description}
         </Typography>
 
         {/* Search bar */}

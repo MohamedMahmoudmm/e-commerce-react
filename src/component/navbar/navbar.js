@@ -11,10 +11,13 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { Link, useNavigate, useLocation } from "react-router-dom"; // ✅ ضفنا useLocation
 import { useSelector, useDispatch } from "react-redux";
-import { logout, logoutUser } from "../../redux/reducers/authReducer";
+import { logoutUser } from "../../redux/reducers/authReducer"; 
+import { switchLanguage } from "../../redux/reducers/langReducer";
+import routes from "./routes";
 
 export default function NavBar() {
-  const { token } = useSelector((state) => state.auth);
+  const { token } = useSelector((state) => state.auth); 
+  const { translations, lang } = useSelector((state) => state.language);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation(); // ✅ عشان نعرف إحنا فين
@@ -43,11 +46,11 @@ export default function NavBar() {
 
 
             <Box sx={{ display: "flex", gap: 4 }}>
-              {["Home", "Shop", "About Us", "Contact"].map((item) => (
+              {routes[lang].map((item) => (
                 <Button
                   component={Link}
-                  to={`/${item.toLowerCase()}`}
-                  key={item}
+                  to={item.path}
+                  key={item.label}
                   sx={{
                     color: "white",
                     fontWeight: 500,
@@ -60,13 +63,30 @@ export default function NavBar() {
                     },
                   }}
                 >
-                  {item}
+                  {item.label}
                 </Button>
               ))}
             </Box>
 
-            {/* Cart + Wishlist + Auth */}
+            {/* Cart + Wishlist + Auth + Language */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              {/* Language Switch */}
+              <Button
+                variant="outlined"
+                sx={{
+                  borderColor: "white",
+                  color: "white",
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  "&:hover": { borderColor: "#ff7b00", color: "#ff7b00" },
+                }}
+                onClick={() =>
+                  dispatch(switchLanguage(lang === "en" ? "ar" : "en"))
+                }
+              >
+                {lang === "en" ? "العربية" : "English"}
+              </Button>
+
               <IconButton color="inherit" component={Link} to="/wishlist">
                 <FavoriteIcon />
               </IconButton>
@@ -88,7 +108,7 @@ export default function NavBar() {
                     },
                   }}
                 >
-                  Logout
+                  {translations?.Logout || "Logout"}
                 </Button>
               ) : location.pathname === "/login" ? (
                 <Button
@@ -118,7 +138,7 @@ export default function NavBar() {
                   color="success"
                   sx={{ textTransform: "none", fontWeight: "bold" }}
                 >
-                  Login
+                  {translations?.Login || "Login"}
                 </Button>
               )}
 
