@@ -50,125 +50,99 @@ export default function ProductCard({ item }) {
   }
 
   return (
-    <Grid
-      item
-      xs={12}
-      sm={6}
-      md={3}
-      lg={2.4}
-      xl={2}
-      key={item._id}
-      display="flex"
-      justifyContent="center"
+    <Grid 
+  item 
+  xs={12} sm={6} md={4} lg={3} xl={2} 
+  display="flex" 
+  justifyContent="center"
+>
+   <Card
+    elevation={3}
+    sx={{
+      width: 240,          // ✅ عرض ثابت
+      height: 350,         // ✅ طول ثابت
+      display: "flex",
+      flexDirection: "column",
+      borderRadius: 3,
+      cursor: "pointer",
+      transition: "all 0.3s",
+      "&:hover": { boxShadow: 6, transform: "translateY(-4px)" },
+    }}
+    onClick={goToDetails}
+  >
+    {/* الصورة */}
+    <Box 
+      position="relative" 
+      sx={{ height: 200, bgcolor: "#f9f9f9" }}
     >
-      <Card
-        elevation={3}
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          dispatch(toggleFavorite(item));
+        }}
+        sx={{
+          position: "absolute",
+          top: 8,
+          right: 8,
+          bgcolor: "white",
+          "&:hover": { bgcolor: "grey.100" },
+          zIndex: 2,
+        }}
+      >
+        <Favorite
+          sx={{
+            color: favorites.some((fav) => fav._id === item._id) ? "red" : "gray",
+          }}
+        />
+      </IconButton>
+
+      <Box
+        component="img"
+        src={item.images?.[0] || ""}
+        alt={item.name}
         sx={{
           width: "100%",
-          maxWidth: {
-            xs: "100%",
-            sm: 300,
-            md: 260,
-            lg: 240,
-            xl: 220,
-          },
-          transition: "all 0.3s",
-          borderRadius: 3,
-          cursor: "pointer", // ✅ يوضح إنه قابل للنقر
-          "&:hover": {
-            boxShadow: 6,
-            transform: "translateY(-4px)",
-          },
+          height: "100%",
+          objectFit: "contain",  // ✅ الصورة كلها تبان بدون قص
+          display: "block",
         }}
-        onClick={goToDetails} // ✅ إضافة التنقل عند الضغط على الكارد
+      />
+    </Box>
+
+    {/* المحتوى */}
+    <CardContent sx={{ flexGrow: 1, p: 2 }}>
+      <Typography variant="body2" color="text.secondary" gutterBottom noWrap>
+        {item.category?.cat_name}
+      </Typography>
+
+      <Typography
+        variant="subtitle1"
+        fontWeight="bold"
+        gutterBottom
+        sx={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
       >
-        <Box position="relative">
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation(); // ✅ يمنع التنقل عند الضغط على Favorite
-              dispatch(toggleFavorite(item));
-            }}
-            sx={{
-              position: "absolute",
-              top: 8,
-              right: 8,
-              bgcolor: "white",
-              "&:hover": { bgcolor: "grey.100" },
-            }}
-          >
-            <Favorite
-              sx={{
-                color: favorites.some((fav) => fav._id === item._id)
-                  ? "red"
-                  : "gray",
-              }}
-            />
-          </IconButton>
+        {item.name}
+      </Typography>
 
-<Box sx={{ display: "flex", justifyContent: "center" }}>
-   <img
-  src={item.images[0] || ""}
-  alt={item.name}
-  style={{
-    width: "100%",        // الصورة تملأ عرض الكارد
-    height: "220px",      // نفس الارتفاع لكل الصور
-    objectFit: "contain", // الصورة كلها تظهر بدون قص
-    backgroundColor: "#f9f9f9", // لون خلفية خفيف للفراغات
-    display: "block",
-    mx: "auto",
-  }}/>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+        <Typography variant="h6" fontWeight="bold" color="text.primary">
+          ${item.price}
+        </Typography>
 
-
-</Box>
-         
-        </Box>
-
-        <CardContent sx={{ p: { xs: 3, sm: 2 } }}>
-          <Typography variant="body2" color="text.secondary" gutterBottom>
-            {item.category?.cat_name}
-          </Typography>
-
-          <Typography
-            variant="h6"
-            fontWeight="bold"
-            gutterBottom
-            fontSize={{ xs: 16, sm: 15 }}
-          >
-            {item.name}
-          </Typography>
-
-       
-
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Typography
-              variant="h6"
-              fontWeight="bold"
-              color="text.primary"
-              fontSize={{ xs: 18, sm: 16 }}
-            >
-              ${item.price}
-            </Typography>
-
-            <Box>
-              <IconButton
-                onClick={(e) => AddToCart(item._id, e)} // ✅ إضافة event parameter
-                sx={{
-                  bgcolor: "#051a3dff",
-                  color: "white",
-                  "&:hover": { bgcolor: "primary.dark" },
-                }}
-                size="small"
-              >
-                <ShoppingCart />
-              </IconButton>
-            </Box>
-          </Box>
-        </CardContent>
-      </Card>
+        <IconButton
+          onClick={(e) => AddToCart(item._id, e)}
+          sx={{
+            bgcolor: "#051a3dff",
+            color: "white",
+            "&:hover": { bgcolor: "#032259" },
+          }}
+          size="small"
+        >
+          <ShoppingCart fontSize="small" />
+        </IconButton>
+      </Box>
+    </CardContent>
+  </Card>
 
       <Snackbar
         open={snackbar.open}
