@@ -29,8 +29,8 @@ import ContactUs from './component/contact/ContactUs';
 import AddProduct from './component/adminDashboard/addProduct.js';
 
 function App() {
-  const myId = localStorage.getItem("userId")??""; 
-  const myRole = localStorage.getItem("role")??"";   
+  const myId = localStorage.getItem("userId") ?? "";
+  const myRole = localStorage.getItem("role") ?? "";
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -71,33 +71,34 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-      
         <NavBar />
         <Routes>
+          {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Register />} />
           <Route path="/signup/confirm" element={<ConfirmEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
-
-          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-          <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
-          <Route path="/shop" element={<ProtectedRoute><IlanaGrocery /></ProtectedRoute>} />
-          <Route path="/dash" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-          <Route path="/adminAllProduct" element={<ProtectedRoute><AdminAllProduct /></ProtectedRoute>} />
-          <Route path='/addproduct' element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
-          <Route path="/orders" element={<ProtectedRoute><OrdersList /></ProtectedRoute>} />
-          <Route path="/acceptedOrders" element={<ProtectedRoute><AcceptOrder /></ProtectedRoute>} />
-          <Route path="/pendingOrders" element={<ProtectedRoute><PendingOrder /></ProtectedRoute>} />
-          <Route path="/canceledOrders" element={<ProtectedRoute><CanceledOrder /></ProtectedRoute>} />
-          <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
-          <Route path="/cart" element={<ProtectedRoute><ShoppingCart /></ProtectedRoute>} />
-          <Route path="/viewdetails/:id" element={<ProtectedRoute><ViewDetails /></ProtectedRoute>} />
-          <Route path="/contact" element={<ProtectedRoute><ContactUs /></ProtectedRoute>} />
-          <Route path="/about" element={<ProtectedRoute><AboutUs/></ProtectedRoute>} />
-          <Route path="*" element={<ProtectedRoute><NotFound /></ProtectedRoute>} />
+          {/* User Routes */}
+          <Route path="/" element={<ProtectedRoute allowedRoles={["user"]}><HomePage /></ProtectedRoute>} />
+          <Route path="/home" element={<ProtectedRoute allowedRoles={["user"]}><HomePage /></ProtectedRoute>} />
+          <Route path="/shop" element={<ProtectedRoute allowedRoles={["user"]}><IlanaGrocery /></ProtectedRoute>} />
+          <Route path="/wishlist" element={<ProtectedRoute allowedRoles={["user"]}><WishlistPage /></ProtectedRoute>} />
+          <Route path="/contact" element={<ProtectedRoute allowedRoles={["user"]}><ContactUs /></ProtectedRoute>} />
+          <Route path="/about" element={<ProtectedRoute allowedRoles={["user"]}><AboutUs /></ProtectedRoute>} />
+          <Route path="/cart" element={<ProtectedRoute allowedRoles={["user"]}><ShoppingCart /></ProtectedRoute>} />
+          <Route path="/viewdetails/:id" element={<ProtectedRoute allowedRoles={["user"]}><ViewDetails /></ProtectedRoute>} />
+          {/* Admin Routes */}
+          <Route path="/dash" element={<ProtectedRoute allowedRoles={["admin"]}><Dashboard /></ProtectedRoute>} />
+          <Route path="/adminAllProduct" element={<ProtectedRoute allowedRoles={["admin"]}><AdminAllProduct /></ProtectedRoute>} />
+          <Route path="/addproduct" element={<ProtectedRoute allowedRoles={["admin"]}><AddProduct /></ProtectedRoute>} />
+          <Route path="/orders" element={<ProtectedRoute allowedRoles={["admin"]}><OrdersList /></ProtectedRoute>} />
+          <Route path="/acceptedOrders" element={<ProtectedRoute allowedRoles={["admin"]}><AcceptOrder /></ProtectedRoute>} />
+          <Route path="/pendingOrders" element={<ProtectedRoute allowedRoles={["admin"]}><PendingOrder /></ProtectedRoute>} />
+          <Route path="/canceledOrders" element={<ProtectedRoute allowedRoles={["admin"]}><CanceledOrder /></ProtectedRoute>} />
+          {/* Not Found Route */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
-
         <Snackbar
           open={snackbar.open}
           autoHideDuration={4000}
