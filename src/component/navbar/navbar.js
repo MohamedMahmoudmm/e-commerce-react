@@ -15,7 +15,8 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close"; // 👈 أيقونة الإكس
+import CloseIcon from "@mui/icons-material/Close"; 
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"; 
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../../redux/reducers/authReducer";
@@ -91,10 +92,10 @@ export default function NavBar() {
           sx={{
             display: { xs: "none", md: "flex" },
             alignItems: "center",
-            gap: 2, // 👈 يبعد كل العناصر عن بعض
+            gap: 2, 
           }}
         >
-          {/* 👇 دول هيختفوا لو اليوزر أدمن */}
+
           {localStorage.getItem("role") !== "admin" && (
             <>
               <IconButton color="inherit" component={Link} to="/wishlist">
@@ -105,7 +106,11 @@ export default function NavBar() {
               </IconButton>
             </>
           )}
-        {/* Language Switch 👈 هيفضل جنب اللوجين */}
+          {token && localStorage.getItem("role") !== "admin" && (
+            <IconButton color="inherit" component={Link} to="/profile">
+              <AccountCircleIcon />
+            </IconButton>
+          )}
           <Button
             variant="outlined"
             sx={{
@@ -202,17 +207,21 @@ export default function NavBar() {
         </IconButton>
 
         <List sx={{ width: 250, mt: 6 }}>
-          {routes[lang].map((item) => (
-            <ListItem key={item.label} disablePadding>
-              <ListItemButton
-                component={Link}
-                to={item.path}
-                onClick={() => setOpen(false)}
-              >
-                <ListItemText primary={item.label} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          {localStorage.getItem("role") !== "admin" && (
+            <>
+              {routes[lang].map((item) => (
+                <ListItem key={item.label} disablePadding>
+                  <ListItemButton
+                    component={Link}
+                    to={item.path}
+                    onClick={() => setOpen(false)}
+                  >
+                    <ListItemText primary={item.label} />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </>
+          )}
         {/* Icons in Mobile */}
           {localStorage.getItem("role") !== "admin" && (
             <ListItem sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
@@ -222,6 +231,11 @@ export default function NavBar() {
               <IconButton color="inherit" component={Link} to="/cart">
                 <ShoppingCartIcon />
               </IconButton>
+              {token && (
+                <IconButton color="inherit" component={Link} to="/profile" onClick={() => setOpen(false)}>
+                  <AccountCircleIcon />
+                </IconButton>
+              )}
             </ListItem>
           )}
 
@@ -239,7 +253,43 @@ export default function NavBar() {
             </Button>
           </ListItem>
           {/* Auth in Mobile */}
-          ...
+          {token ? (
+            <ListItem>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() => {
+                  handleLogout();
+                  setOpen(false);
+                }}
+                sx={{
+                  textTransform: "none",
+                  fontWeight: "bold",
+                  backgroundColor: "#ff7b00",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#e56e00",
+                  },
+                }}
+              >
+                {translations?.Logout || "Logout"}
+              </Button>
+            </ListItem>
+          ) : (
+            <ListItem>
+              <Button
+                fullWidth
+                component={Link}
+                to="/login"
+                variant="contained"
+                color="success"
+                sx={{ textTransform: "none", fontWeight: "bold" }}
+                onClick={() => setOpen(false)}
+              >
+                {translations?.Login || "Login"}
+              </Button>
+            </ListItem>
+          )}
         </List>
       </Drawer>
     </>

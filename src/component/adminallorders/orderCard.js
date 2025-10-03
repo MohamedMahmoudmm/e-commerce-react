@@ -8,152 +8,185 @@ import {
   Chip,
   Button,
   Collapse,
+  IconButton,
+  Paper,
 } from "@mui/material";
 import { useState } from "react";
+import { ExpandMore, ExpandLess, CheckCircle, Pending, Cancel, ShoppingCart, Person, LocationOn } from "@mui/icons-material";
 import { axiosInstance } from "../../Axios/AxiosInstance";
 import { getSocket } from "../../redux/reducers/socket";
 import { useDispatch } from "react-redux";
 import { fetchAllOrders } from "../../redux/reducers/allOrderReducer";
 
 function OrderCard({ order }) {
-
-
   const [expandedOrder, setExpandedOrder] = useState(null);
 
   const dispatch = useDispatch();
+
   const toggleExpand = (orderId) => {
     setExpandedOrder(expandedOrder === orderId ? null : orderId);
   };
+
   const AcceptOrder = (orderId, userId) => {
+    // Check if userId exists before proceeding
+    if (!userId) {
+      console.warn("User ID not found for order:", orderId);
+      return;
+    }
     axiosInstance.put(`orders/${orderId}`, { status: "processing" }).then((res) => {
       dispatch(fetchAllOrders());
       getSocket().emit("order-accepted", {
         userId: userId, // the target user
         message: "Your order has been accepted",
       });
+    }).catch((err) => {
+      console.error("Error accepting order:", err);
+    });
+  };
 
-    })
-  }
+  const statusIcons = {
+    processing: <CheckCircle color="success" />,
+    cancelled: <Cancel color="error" />,
+    pending: <Pending color="warning" />,
+  };
+
   const statusColors = {
     processing: "success",
     cancelled: "error",
     pending: "warning",
   };
+
   return (
-    <Grid item xs={12} key={order._id}>
+    <Grid item xs={12} sm={6} md={4} lg={3} key={order._id}>
       <Card
         sx={{
           borderRadius: 3,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.1)",
+          transition: "transform 0.2s ease-in-out",
+          "&:hover": {
+            transform: "translateY(-4px)",
+          },
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <CardContent>
+        <CardContent sx={{ flexGrow: 1 }}>
           {/* Order Header */}
-          <Grid
-            container
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-            spacing={2}
-          >
-            <Grid item xs={12} md={3}>
-              <Typography>
-                Order ID:{" "}
-                <Typography
-                  component="span"
-                  fontWeight="bold"
-                  color="primary"
-                >
-                  #{order._id}
+          <Box sx={{ mb: 3 }}>
+            <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+              <Grid item xs={8}>
+                <Typography variant="h6" color="primary" gutterBottom>
+                  <ShoppingCart fontSize="small" sx={{ mr: 1, verticalAlign: "middle" }} />
+                  Order #{order._id.substring(0, 8)}...
                 </Typography>
-              </Typography>
+                <Typography variant="body2" color="text.secondary" gutterBottom>
+                  <Person fontSize="small" sx={{ mr: 0.5, verticalAlign: "middle" }} />
+                  {order.userId?.name || "Unknown User"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  <LocationOn fontSize="small" sx={{ mr: 0.5, verticalAlign: "middle" }} />
+                  {order.shippingAddress || "No Address"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </Typography>
+              </Grid>
+              <Grid item xs={4} container justifyContent="flex-end">
+                <Chip
+                  icon={statusIcons[order.status]}
+                  label={order.status.toUpperCase()}
+                  color={statusColors[order.status]}
+                  size="small"
+                  sx={{
+                    fontWeight: "bold",
+                    borderRadius: 2,
+                  }}
+                />
+              </Grid>
             </Grid>
-
-            <Grid item xs={12} md={3}>
-              <Typography variant="body2">
-                Order Date: {order.createdAt}
-              </Typography>
+            <Divider sx={{ my: 2 }} />
+            {/* Total Price with Expand Icon in the same row */}
+            <Grid container alignItems="center" justifyContent="space-between">
+              <Grid item xs={10}>
+                <Typography variant="h5" fontWeight="bold" color="text.primary" gutterBottom>
+                  Total: ${order.totalPrice?.toFixed(2) || "0.00"}
+                </Typography>
+              </Grid>
+              <Grid item xs={2} container justifyContent="flex-end">
+                <IconButton
+                  onClick={() => toggleExpand(order._id)}
+                  sx={{ color: "primary.main" }}
+                >
+                  {expandedOrder === order._id ? <ExpandLess /> : <ExpandMore />}
+                </IconButton>
+              </Grid>
             </Grid>
+          </Box>
 
-            <Grid item xs={12} md={2}>
-              <Chip
-                label={order.status}
-                color={statusColors[order.status]}
-                size="small"
-                sx={{ textTransform: "capitalize", fontWeight: "bold" }}
-              />
-            </Grid>
-
-            <Grid item xs={12} md={2}>
-              <Typography fontWeight="bold">
-                Total: ${order.totalPrice}
-              </Typography>
-            </Grid>
-
-            {order.status === "pending" && <Grid item xs={12} md={2}>
+          {/* Action Buttons */}
+          <Box sx={{ mb: 2, display: "flex", gap: 1, justifyContent: "flex-start" }}>
+            {order.status === "pending" && (
               <Button
-                variant="outlined"
+                variant="contained"
                 color="success"
                 size="small"
-                onClick={() => AcceptOrder(order._id, order.userId._id)}
+                startIcon={<CheckCircle />}
+                onClick={() => AcceptOrder(order._id, order.userId?._id)}
+                sx={{ borderRadius: 2, textTransform: "none" }}
               >
-                accepte order
+                Accept Order
               </Button>
-            </Grid>}
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Button
-              variant="outlined"
-              size="small"
-              onClick={() => toggleExpand(order._id)}
-            >
-              {expandedOrder === order._id ? "Hide Details" : "View Details"}
-            </Button>
-          </Grid>
-          <Divider />
+            )}
+          </Box>
 
           {/* Product List (collapsible) */}
-          <Collapse in={expandedOrder === order._id}>
-            <Box mt={2}>
-              {order.items.map((product, index) => (
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="center"
-                  key={index}
-                  sx={{
-                    mb: 2,
-                    pb: 2,
-                    borderBottom:
-                      index !== order.items.length - 1
-                        ? "1px solid #eee"
-                        : "none",
-                  }}
-                >
-                  <Grid item>
-                    <img
-                      src={product.productId.images[0]}
-                      alt={product.productId.name}
-                      width={70}
-                      style={{ borderRadius: 8 }}
-                    />
-                  </Grid>
-                  <Grid item xs>
-                    <Typography fontWeight="bold">
-                      {product.productId.name}
-                    </Typography>
-                    <Typography variant="body2">
-                      Qty: {product.quantity}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              ))}
+          <Collapse in={expandedOrder === order._id} timeout="auto" unmountOnExit>
+            <Divider sx={{ my: 2 }} />
+            <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{ mb: 2 }}>
+              Order Items
+            </Typography>
+            <Box sx={{ maxHeight: '200px', overflowY: 'auto' }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {order.items?.map((product, index) => (
+                  <Paper
+                    key={index}
+                    sx={{
+                      p: 2,
+                      borderRadius: 2,
+                      transition: "box-shadow 0.2s",
+                      "&:hover": { boxShadow: "0 2px 10px rgba(0,0,0,0.1)" },
+                    }}
+                    elevation={1}
+                  >
+                    <Grid container spacing={2} alignItems="center">
+                      <Grid item>
+                        <img
+                          src={product.productId?.images?.[0] || "/placeholder-image.jpg"} // Add fallback image if needed
+                          alt={product.productId?.name || "Product"}
+                          width={60}
+                          height={60}
+                          style={{ borderRadius: 8, objectFit: "cover" }}
+                        />
+                      </Grid>
+                      <Grid item xs>
+                        <Typography fontWeight="bold" variant="body1">
+                          {product.productId?.name || "Unknown Product"}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Quantity: {product.quantity || 0} | Price: ${((product.quantity || 0) * (product.productId?.price || 0)).toFixed(2)}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Paper>
+                )) || <Typography color="text.secondary">No items in this order</Typography>}
+              </Box>
             </Box>
           </Collapse>
         </CardContent>
       </Card>
     </Grid>
-  )
+  );
 }
 
-export default OrderCard
+export default OrderCard;

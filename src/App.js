@@ -27,6 +27,7 @@ import NotFound from './component/notfound/NotFound.jsx';
 import AboutUs from './component/about/AboutUs.jsx';
 import ContactUs from './component/contact/ContactUs';
 import AddProduct from './component/adminDashboard/addProduct.js';
+import UserProfilePage from './component/user/UserProfilePage.js';
 
 function App() {
   const myId = localStorage.getItem("userId") ?? "";
@@ -79,6 +80,7 @@ function App() {
           <Route path="/signup/confirm" element={<ConfirmEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
+          <Route path='/profile' element={<ProtectedRoute allowedRoles={["user"]}><UserProfilePage /></ProtectedRoute>} />
           {/* User Routes */}
           <Route path="/" element={<ProtectedRoute allowedRoles={["user"]}><HomePage /></ProtectedRoute>} />
           <Route path="/home" element={<ProtectedRoute allowedRoles={["user"]}><HomePage /></ProtectedRoute>} />

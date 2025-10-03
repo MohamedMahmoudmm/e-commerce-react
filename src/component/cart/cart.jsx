@@ -32,8 +32,7 @@ import { getSocket } from "../../redux/reducers/socket";
 import { axiosInstance } from '../../Axios/AxiosInstance';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { getCart } from '../../redux/reducers/allProductReducer';
-
+import {getCart} from '../../redux/reducers/allProductReducer';
 
 
 const ShoppingCart = () => {
@@ -488,7 +487,7 @@ function placeOrder() {
   xs={12}
   lg={4}
   sx={{
-    order: { xs: 2, lg: 2 }, // يفضل بعد الكارتات في الموبايل وبرضه الديسكتوب
+    order: { xs: 2, lg: 2 },
   }}
 >
   <Box
@@ -498,7 +497,7 @@ function placeOrder() {
       boxShadow: 3,
       bgcolor: "white",
       width: { xs: "100%", sm: "100%", lg: "100%" },
-      mt: { xs: 3, lg: 0 }, // مسافة فوق في الموبايل عشان تبعد عن الكارتات
+      mt: { xs: 3, lg: 0 }, 
     }}
   >
         <OrderSummary />
