@@ -20,7 +20,12 @@ import {
   useTheme,
   useMediaQuery,
   Snackbar,
-  Alert
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions
 } from '@mui/material';
 import {
   Remove,
@@ -41,6 +46,7 @@ const ShoppingCart = () => {
 const [subTotal, setSubTotal] = useState(0);
  const [total,setTotal] =useState(0);
  const [cartId, setCartId] = useState("");
+ const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   
   
  const [snackbar, setSnackbar] = useState({
@@ -139,7 +145,7 @@ function removeItem(productId) {
 
 //////////////////////////////
 function placeOrder() {
-  
+  setConfirmDialogOpen(false);
   axiosInstance.post("cart/order", { shippingAddress: "fayoum" }).then((res) => {
     setSnackbar({
             open: true,
@@ -239,7 +245,7 @@ function placeOrder() {
             fontSize: '16px',
             fontWeight: 600
           }}
-          onClick={placeOrder}
+          onClick={() => setConfirmDialogOpen(true)}
           >
           {translations?.Checkout}
         </Button>
@@ -508,6 +514,32 @@ function placeOrder() {
       </Grid>
     </Container>
   )}
+
+  {/* Confirmation Dialog */}
+  <Dialog
+    open={confirmDialogOpen}
+    onClose={() => setConfirmDialogOpen(false)}
+    aria-labelledby="confirm-dialog-title"
+    aria-describedby="confirm-dialog-description"
+  >
+    <DialogTitle id="confirm-dialog-title">
+      {translations?.Confirm_Order || "Confirm Order"}
+    </DialogTitle>
+    <DialogContent>
+      <DialogContentText id="confirm-dialog-description">
+        {translations?.Confirm_Order_Message || `Are you sure you want to place an order for $${total.toFixed(2)}?`}
+      </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={() => setConfirmDialogOpen(false)}>
+        {translations?.Cancel || "Cancel"}
+      </Button>
+     <Button onClick={placeOrder} variant="contained" sx={{ backgroundColor: "#042c69ff"}}>
+     {translations?.Confirm || "Confirm"}
+    </Button>
+    </DialogActions>
+  </Dialog>
+
   <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleClose}>
     <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: '100%' }}>
       {snackbar.message}
