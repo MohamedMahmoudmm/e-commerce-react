@@ -5,13 +5,20 @@ import {
 } from "@mui/material";
 import OrderCard from "./orderCard";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { fetchAllOrders } from "../../redux/reducers/allOrderReducer";
 export default function PendingOrder() {
 
   const allorders = useSelector((state) => state.allOrders.All_Orders);
   const [pendingdorders, setPendingOrders] = useState([]);
   
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchAllOrders());
+  }, [dispatch]);
+
   useEffect(() => {
       const pendingOrders = allorders.filter(order => order.status === "pending");
       setPendingOrders(pendingOrders);
@@ -25,7 +32,7 @@ export default function PendingOrder() {
 
       <Grid container spacing={3} justifyContent={"center"}>
         {pendingdorders.map((order) => (
-         <OrderCard key={order.id} order={order} />
+         <OrderCard key={order._id} order={order} />
         ))}
       </Grid>
     </Box>
