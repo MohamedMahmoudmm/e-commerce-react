@@ -28,6 +28,7 @@ import AboutUs from './component/about/AboutUs.jsx';
 import ContactUs from './component/contact/ContactUs';
 import AddProduct from './component/adminDashboard/addProduct.js';
 import UserProfilePage from './component/user/UserProfilePage.js';
+import Footer from './component/common/footer.jsx';
 
 function App() {
   const myId = localStorage.getItem("userId") ?? "";
@@ -101,6 +102,7 @@ function App() {
           {/* Not Found Route */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+       {/* {myRole === "user" && <Footer />} */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={4000}

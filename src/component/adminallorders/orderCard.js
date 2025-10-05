@@ -12,7 +12,7 @@ import {
   Paper,
 } from "@mui/material";
 import { useState } from "react";
-import { ExpandMore, ExpandLess, CheckCircle, Pending, Cancel, ShoppingCart, Person, LocationOn } from "@mui/icons-material";
+import { ExpandMore, ExpandLess, CheckCircle, Pending, Cancel as CancelIcon, Close, ShoppingCart, Person, LocationOn } from "@mui/icons-material";
 import { axiosInstance } from "../../Axios/AxiosInstance";
 import { getSocket } from "../../redux/reducers/socket";
 import { useDispatch } from "react-redux";
@@ -28,7 +28,6 @@ function OrderCard({ order }) {
   };
 
   const AcceptOrder = (orderId, userId) => {
-    // Check if userId exists before proceeding
     if (!userId) {
       console.warn("User ID not found for order:", orderId);
       return;
@@ -36,7 +35,7 @@ function OrderCard({ order }) {
     axiosInstance.put(`orders/${orderId}`, { status: "processing" }).then((res) => {
       dispatch(fetchAllOrders());
       getSocket().emit("order-accepted", {
-        userId: userId, // the target user
+        userId: userId, 
         message: "Your order has been accepted",
       });
     }).catch((err) => {
@@ -44,9 +43,37 @@ function OrderCard({ order }) {
     });
   };
 
+
+  const CancelOrder = (orderId, userId) => {
+    if (!userId) {
+      console.warn("User ID not found for order:", orderId);
+      return;
+    }
+    axiosInstance.put(`orders/${orderId}`, { status: "cancelled" }).then((res) => {
+      dispatch(fetchAllOrders());
+      getSocket().emit("order-cancelled", { 
+        userId: userId,
+        message: "Your order has been cancelled",
+      });
+    }).catch((err) => {
+      console.error("Error cancelling order:", err);
+    });
+  };
+
+  const DeleteOrder = (orderId) => {
+    if (window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) { 
+      axiosInstance.delete(`orders/${orderId}`).then((res) => {
+        dispatch(fetchAllOrders()); 
+        console.log("Order deleted successfully");
+      }).catch((err) => {
+        console.error("Error deleting order:", err);
+      });
+    }
+  };
+
   const statusIcons = {
     processing: <CheckCircle color="success" />,
-    cancelled: <Cancel color="error" />,
+    cancelled: <CancelIcon color="error" />,
     pending: <Pending color="warning" />,
   };
 
@@ -69,8 +96,25 @@ function OrderCard({ order }) {
           height: "100%",
           display: "flex",
           flexDirection: "column",
+          position: "relative", 
         }}
       >
+        <IconButton
+          onClick={() => DeleteOrder(order._id)}
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            zIndex: 1,
+            color: "error.main",
+            "&:hover": {
+              backgroundColor: "error.light",
+            },
+          }}
+        >
+          <Close />
+        </IconButton>
+
         <CardContent sx={{ flexGrow: 1 }}>
           {/* Order Header */}
           <Box sx={{ mb: 3 }}>
@@ -106,7 +150,6 @@ function OrderCard({ order }) {
               </Grid>
             </Grid>
             <Divider sx={{ my: 2 }} />
-            {/* Total Price with Expand Icon in the same row */}
             <Grid container alignItems="center" justifyContent="space-between">
               <Grid item xs={10}>
                 <Typography variant="h5" fontWeight="bold" color="text.primary" gutterBottom>
@@ -125,18 +168,30 @@ function OrderCard({ order }) {
           </Box>
 
           {/* Action Buttons */}
-          <Box sx={{ mb: 2, display: "flex", gap: 1, justifyContent: "flex-start" }}>
+          <Box sx={{ mb: 2, display: "flex", gap: 1, justifyContent: "flex-start", flexWrap: "wrap" }}> 
             {order.status === "pending" && (
-              <Button
-                variant="contained"
-                color="success"
-                size="small"
-                startIcon={<CheckCircle />}
-                onClick={() => AcceptOrder(order._id, order.userId?._id)}
-                sx={{ borderRadius: 2, textTransform: "none" }}
-              >
-                Accept Order
-              </Button>
+              <>
+                <Button
+                  variant="contained"
+                  color="success"
+                  size="small"
+                  startIcon={<CheckCircle />}
+                  onClick={() => AcceptOrder(order._id, order.userId?._id)}
+                  sx={{ borderRadius: 2, textTransform: "none" }}
+                >
+                  Accept Order
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  size="small"
+                  startIcon={<CancelIcon />}
+                  onClick={() => CancelOrder(order._id, order.userId?._id)}
+                  sx={{ borderRadius: 2, textTransform: "none" }}
+                >
+                  Cancel Order
+                </Button>
+              </>
             )}
           </Box>
 

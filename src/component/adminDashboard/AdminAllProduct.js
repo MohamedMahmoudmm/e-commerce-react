@@ -26,7 +26,7 @@ const AdminAllProduct = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [page, setPage] = useState(1);
-  const [limit] = useState(8);
+  const [limit] = useState(13);
   const [editProductId, setEditProductId] = useState(null);
   const [newProduct, setNewProduct] = useState({
     name: "",
@@ -48,6 +48,13 @@ const AdminAllProduct = () => {
       .catch((err) => console.log(err));
   }, [dispatch]);
 
+  // Scroll to form after edit mode is activated
+  useEffect(() => {
+    if (editProductId && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [editProductId]);
+
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
     setPage(1);
@@ -63,8 +70,7 @@ const AdminAllProduct = () => {
       image: product.images[0] || "",
       stock: product.stock || "",
     });
-    // Scroll to the form
-    formRef.current.scrollIntoView({ behavior: "smooth" });
+    // Scroll will happen in useEffect after render
   };
 
   const handleNewProductChange = (e) => {
@@ -89,15 +95,6 @@ const AdminAllProduct = () => {
         .then(() => {
           dispatch(fetchAllProducts()); // Refresh products after update
           setEditProductId(null); // Exit edit mode
-          setNewProduct({ name: "", price: "", category: "", image: "", stock: "" }); // Reset form
-        })
-        .catch((err) => console.log(err));
-    } else {
-      // Add new product
-      axiosInstance
-        .post("api/products", productData)
-        .then(() => {
-          dispatch(fetchAllProducts()); // Refresh products after adding
           setNewProduct({ name: "", price: "", category: "", image: "", stock: "" }); // Reset form
         })
         .catch((err) => console.log(err));
@@ -189,147 +186,149 @@ const AdminAllProduct = () => {
             </Typography>
           </Box>
 
-          {/* Add/Edit Product Form */}
-          <Box
-            component="form"
-            onSubmit={handleAddOrUpdateProduct}
-            ref={formRef}
-            sx={{
-              mb: 4,
-              p: 3,
-              borderRadius: "16px",
-              boxShadow: "0 4px 20px rgba(0,0,0,0.10)",
-              bgcolor: "#fff",
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              maxWidth: 600,
-              mx: "auto",
-            }}
-          >
-            <Typography variant="h6" fontWeight="bold">
-              {editProductId ? "Edit Product" : "Add New Product"}
-            </Typography>
-            <TextField
-              fullWidth
-              size="small"
-              label="Product Name"
-              name="name"
-              value={newProduct.name}
-              onChange={handleNewProductChange}
-              required
+          {/* Edit Product Form - Only show when editing */}
+          {editProductId && (
+            <Box
+              component="form"
+              onSubmit={handleAddOrUpdateProduct}
+              ref={formRef}
               sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: "#ff7b00" },
-                  "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
-                },
-                "& .MuiInputLabel-root": { color: "#666" },
-                "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
+                mb: 4,
+                p: 3,
+                borderRadius: "16px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.10)",
+                bgcolor: "#fff",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2,
+                maxWidth: 600,
+                mx: "auto",
               }}
-            />
-            <TextField
-              fullWidth
-              size="small"
-              label="Price"
-              name="price"
-              type="number"
-              value={newProduct.price}
-              onChange={handleNewProductChange}
-              required
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: "#ff7b00" },
-                  "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
-                },
-                "& .MuiInputLabel-root": { color: "#666" },
-                "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
-              }}
-            />
-            <TextField
-              fullWidth
-              size="small"
-              label="Stock"
-              name="stock"
-              type="number"
-              value={newProduct.stock}
-              onChange={handleNewProductChange}
-              required
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: "#ff7b00" },
-                  "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
-                },
-                "& .MuiInputLabel-root": { color: "#666" },
-                "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
-              }}
-            />
-            <FormControl fullWidth size="small">
-              <InputLabel sx={{ color: "#666" }}>
-                {translations?.Category || "Category"}
-              </InputLabel>
-              <Select
-                name="category"
-                value={newProduct.category}
+            >
+              <Typography variant="h6" fontWeight="bold">
+                Edit Product
+              </Typography>
+              <TextField
+                fullWidth
+                size="small"
+                label="Product Name"
+                name="name"
+                value={newProduct.name}
                 onChange={handleNewProductChange}
                 required
                 sx={{
-                  borderRadius: "8px",
                   "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
                     "& fieldset": { borderColor: "#ccc" },
                     "&:hover fieldset": { borderColor: "#ff7b00" },
                     "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
                   },
+                  "& .MuiInputLabel-root": { color: "#666" },
+                  "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
+                }}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Price"
+                name="price"
+                type="number"
+                value={newProduct.price}
+                onChange={handleNewProductChange}
+                required
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: "#ff7b00" },
+                    "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
+                  },
+                  "& .MuiInputLabel-root": { color: "#666" },
+                  "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
+                }}
+              />
+              <TextField
+                fullWidth
+                size="small"
+                label="Stock"
+                name="stock"
+                type="number"
+                value={newProduct.stock}
+                onChange={handleNewProductChange}
+                required
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: "#ff7b00" },
+                    "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
+                  },
+                  "& .MuiInputLabel-root": { color: "#666" },
+                  "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
+                }}
+              />
+              <FormControl fullWidth size="small">
+                <InputLabel sx={{ color: "#666" }}>
+                  {translations?.Category || "Category"}
+                </InputLabel>
+                <Select
+                  name="category"
+                  value={newProduct.category}
+                  onChange={handleNewProductChange}
+                  required
+                  sx={{
+                    borderRadius: "8px",
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "#ccc" },
+                      "&:hover fieldset": { borderColor: "#ff7b00" },
+                      "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
+                    },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em>Select Category</em>
+                  </MenuItem>
+                  {categories.map((cat) => (
+                    <MenuItem key={cat._id} value={cat._id}>
+                      {cat.cat_name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                fullWidth
+                size="small"
+                label="Image URL"
+                name="image"
+                type="text"
+                value={newProduct.image}
+                onChange={handleNewProductChange}
+                required
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                    "& fieldset": { borderColor: "#ccc" },
+                    "&:hover fieldset": { borderColor: "#ff7b00" },
+                    "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
+                  },
+                  "& .MuiInputLabel-root": { color: "#666" },
+                  "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
+                }}
+              />
+              <Button
+                type="submit"
+                sx={{
+                  bgcolor: "#ff7b00",
+                  color: "white",
+                  "&:hover": { bgcolor: "#e66e00" },
+                  mt: 1,
+                  borderRadius: "8px",
                 }}
               >
-                <MenuItem value="">
-                  <em>Select Category</em>
-                </MenuItem>
-                {categories.map((cat) => (
-                  <MenuItem key={cat._id} value={cat._id}>
-                    {cat.cat_name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-              fullWidth
-              size="small"
-              label="Image URL"
-              name="image"
-              type="text"
-              value={newProduct.image}
-              onChange={handleNewProductChange}
-              required
-              sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "8px",
-                  "& fieldset": { borderColor: "#ccc" },
-                  "&:hover fieldset": { borderColor: "#ff7b00" },
-                  "&.Mui-focused fieldset": { borderColor: "#ff7b00" },
-                },
-                "& .MuiInputLabel-root": { color: "#666" },
-                "& .MuiInputLabel-shrink": { transform: "translate(14px, -6px) scale(0.75)" },
-              }}
-            />
-            <Button
-              type="submit"
-              sx={{
-                bgcolor: "#ff7b00",
-                color: "white",
-                "&:hover": { bgcolor: "#e66e00" },
-                mt: 1,
-                borderRadius: "8px",
-              }}
-            >
-              {editProductId ? "Update Product" : "Add Product"}
-            </Button>
-          </Box>
+                Update Product
+              </Button>
+            </Box>
+          )}
 
           <Grid container spacing={3} justifyContent="center">
             {paginatedProducts.map((product) => (
