@@ -10,6 +10,11 @@ import {
   Collapse,
   IconButton,
   Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Avatar as MUIAvatar,
 } from "@mui/material";
 import { useState } from "react";
 import { ExpandMore, ExpandLess, CheckCircle, Pending, Cancel as CancelIcon, Close, ShoppingCart, Person, LocationOn } from "@mui/icons-material";
@@ -19,12 +24,14 @@ import { useDispatch } from "react-redux";
 import { fetchAllOrders } from "../../redux/reducers/allOrderReducer";
 
 function OrderCard({ order }) {
-  const [expandedOrder, setExpandedOrder] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openDeleteConfirm, setOpenDeleteConfirm] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
 
   const dispatch = useDispatch();
 
-  const toggleExpand = (orderId) => {
-    setExpandedOrder(expandedOrder === orderId ? null : orderId);
+  const toggleExpand = () => {
+    setOpenDialog(true);
   };
 
   const AcceptOrder = (orderId, userId) => {
@@ -61,13 +68,46 @@ function OrderCard({ order }) {
   };
 
   const DeleteOrder = (orderId) => {
-    if (window.confirm("Are you sure you want to delete this order? This action cannot be undone.")) { 
-      axiosInstance.delete(`orders/${orderId}`).then((res) => {
-        dispatch(fetchAllOrders()); 
-        console.log("Order deleted successfully");
-      }).catch((err) => {
-        console.error("Error deleting order:", err);
-      });
+    axiosInstance.delete(`orders/${orderId}`).then((res) => {
+      dispatch(fetchAllOrders()); 
+      console.log("Order deleted successfully");
+      setOpenDeleteConfirm(false);
+      setOrderToDelete(null);
+    }).catch((err) => {
+      console.error("Error deleting order:", err);
+    });
+  };
+
+  const handleDeleteClick = (orderId) => {
+    setOrderToDelete(orderId);
+    setOpenDeleteConfirm(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    if (orderToDelete) {
+      DeleteOrder(orderToDelete);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setOpenDeleteConfirm(false);
+    setOrderToDelete(null);
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'processing':
+        return 'warning';
+      case 'shipped':
+        return 'info';
+      case 'delivered':
+        return 'success';
+      case 'cancelled':
+        return 'error';
+      case 'pending':
+        return 'default';
+      default:
+        return 'default';
     }
   };
 
@@ -81,6 +121,10 @@ function OrderCard({ order }) {
     processing: "success",
     cancelled: "error",
     pending: "warning",
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   return (
@@ -100,7 +144,7 @@ function OrderCard({ order }) {
         }}
       >
         <IconButton
-          onClick={() => DeleteOrder(order._id)}
+          onClick={() => handleDeleteClick(order._id)}
           sx={{
             position: "absolute",
             top: 8,
@@ -157,12 +201,24 @@ function OrderCard({ order }) {
                 </Typography>
               </Grid>
               <Grid item xs={2} container justifyContent="flex-end">
-                <IconButton
-                  onClick={() => toggleExpand(order._id)}
-                  sx={{ color: "primary.main" }}
+                <Button
+                  onClick={toggleExpand}
+                  size="small"
+                  variant="outlined"
+                  sx={{ 
+                    color: "primary.main", 
+                    borderColor: "primary.main",
+                    minWidth: 'auto',
+                    textTransform: 'none',
+                    fontSize: '0.75rem',
+                    "&:hover": {
+                      borderColor: "primary.dark",
+                      bgcolor: "primary.light"
+                    }
+                  }}
                 >
-                  {expandedOrder === order._id ? <ExpandLess /> : <ExpandMore />}
-                </IconButton>
+                  More Details
+                </Button>
               </Grid>
             </Grid>
           </Box>
@@ -194,52 +250,120 @@ function OrderCard({ order }) {
               </>
             )}
           </Box>
+        </CardContent>
+      </Card>
 
-          {/* Product List (collapsible) */}
-          <Collapse in={expandedOrder === order._id} timeout="auto" unmountOnExit>
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="subtitle1" fontWeight="bold" gutterBottom sx={{ mb: 2 }}>
-              Order Items
+      {/* Order Details Dialog */}
+      <Dialog 
+        open={openDialog} 
+        onClose={handleCloseDialog}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          Order Details #{order._id.substring(order._id.length - 6)}
+        </DialogTitle>
+        <DialogContent dividers>
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              <strong>Status:</strong> 
+              <Chip
+                label={order.status}
+                color={getStatusColor(order.status)}
+                size="small"
+                variant="outlined"
+                sx={{ ml: 1 }}
+              />
             </Typography>
-            <Box sx={{ maxHeight: '200px', overflowY: 'auto' }}>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {order.items?.map((product, index) => (
-                  <Paper
-                    key={index}
-                    sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      transition: "box-shadow 0.2s",
-                      "&:hover": { boxShadow: "0 2px 10px rgba(0,0,0,0.1)" },
-                    }}
-                    elevation={1}
-                  >
-                    <Grid container spacing={2} alignItems="center">
+            <Typography variant="body1" gutterBottom>
+              <strong>Date:</strong> {new Date(order.createdAt).toLocaleDateString()}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              <strong>Total Price:</strong> ${order.totalPrice?.toFixed(2) || "0.00"}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              <strong>Shipping Address:</strong> {order.shippingAddress || "No Address"}
+            </Typography>
+            {order.items && order.items.length > 0 && (
+              <Box mt={3}>
+                <Typography variant="h6" gutterBottom>Items:</Typography>
+                <Box mt={2}>
+                  {order.items.map((item, index) => (
+                    <Grid
+                      container
+                      spacing={2}
+                      alignItems="center"
+                      key={index}
+                      sx={{
+                        mb: 2,
+                        pb: 2,
+                        borderBottom:
+                          index !== order.items.length - 1
+                            ? "1px solid #eee"
+                            : "none",
+                      }}
+                    >
                       <Grid item>
-                        <img
-                          src={product.productId?.images?.[0] || "/placeholder-image.jpg"} // Add fallback image if needed
-                          alt={product.productId?.name || "Product"}
-                          width={60}
-                          height={60}
-                          style={{ borderRadius: 8, objectFit: "cover" }}
-                        />
+                        {item.productId?.images && item.productId.images.length > 0 ? (
+                          <img
+                            src={item.productId.images[0]}
+                            alt={item.productId.name}
+                            width={70}
+                            style={{ borderRadius: 8 }}
+                          />
+                        ) : (
+                          <MUIAvatar sx={{ width: 70, height: 70 }}>
+                            <ShoppingCart />
+                          </MUIAvatar>
+                        )}
                       </Grid>
                       <Grid item xs>
-                        <Typography fontWeight="bold" variant="body1">
-                          {product.productId?.name || "Unknown Product"}
+                        <Typography fontWeight="bold">
+                          {item.productId?.name || `Item ${index + 1}`}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Quantity: {product.quantity || 0} | Price: ${((product.quantity || 0) * (product.productId?.price || 0)).toFixed(2)}
+                        <Typography variant="body2">
+                          Qty: {item.quantity}
+                        </Typography>
+                        <Typography variant="body2">
+                          Price: ${((item.quantity || 0) * (item.productId?.price || 0)).toFixed(2)}
                         </Typography>
                       </Grid>
                     </Grid>
-                  </Paper>
-                )) || <Typography color="text.secondary">No items in this order</Typography>}
+                  ))}
+                </Box>
               </Box>
-            </Box>
-          </Collapse>
-        </CardContent>
-      </Card>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} variant="contained">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog 
+        open={openDeleteConfirm} 
+        onClose={handleDeleteCancel}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete this order? This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 }

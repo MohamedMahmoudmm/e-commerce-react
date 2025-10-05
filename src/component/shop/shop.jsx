@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   IconButton,
   Grid,
@@ -9,6 +9,7 @@ import {
   InputBase,
   Button,
   Drawer,
+  Slider,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -17,12 +18,19 @@ import { fetchAllProducts, getCategories } from "../../redux/reducers/allProduct
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../productCard/productCard";
 
-const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) => {
+const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [], priceRange, onPriceChange, maxPrice }) => {
   
-useEffect(() => {
+  useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-}, []);
+  }, []);
+
   const { translations } = useSelector((state) => state.language);
+
+  const minPrice = 0;
+
+  const handlePriceChange = (event, newValue) => {
+    onPriceChange(newValue);
+  };
 
   return (
     <Box sx={{ width: { xs: "250px", md: "250px" }, padding: 3 }}>
@@ -86,6 +94,52 @@ useEffect(() => {
           </Box>
         ))}
       </Box>
+
+      {/* Price Range Filter */}
+      <Box sx={{ mt: 3 }}>
+        <Typography sx={{ mb: 1, fontWeight: 600, color: "#444" }}>
+          {translations?.Price || "Price Range"}
+        </Typography>
+        <Box sx={{ px: 1, py: 1 }}>
+          <Slider
+            value={priceRange}
+            onChange={handlePriceChange}
+            valueLabelDisplay="auto"
+            min={minPrice}
+            max={maxPrice}
+            sx={{
+              color: "#ff7b00",
+              height: 6,
+              "& .MuiSlider-thumb": {
+                height: 20,
+                width: 20,
+                transition: "0.3s cubic-bezier(.47,1.64,.41,.8)",
+                "&:before": {
+                  boxShadow: "0 2px 12px 0 rgba(0,0,0,0.4)",
+                },
+                "&.Mui-active": {
+                  boxShadow: "0 4px 8px 0 rgba(0,0,0,0.4)",
+                },
+              },
+              "& .MuiSlider-valueLabel": {
+                lineHeight: 1.2,
+                fontSize: 12,
+                backgroundColor: "#ff7b00",
+                borderRadius: 6,
+                color: "white",
+              },
+            }}
+          />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "space-between", mt: 1 }}>
+          <Typography variant="body2" color="#666">
+            ${priceRange[0]}
+          </Typography>
+          <Typography variant="body2" color="#666">
+            ${priceRange[1]}
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   );
 };
@@ -102,12 +156,22 @@ const IlanaGrocery = () => {
   const allProduct = useSelector((state) => state.allProduct.All_Product || []);
   const dispatch = useDispatch();
 
+  const maxPrice = useMemo(() => {
+    return Math.max(...allProduct.map((p) => p.price || 0), 0);
+  }, [allProduct]);
+
+  const [priceRange, setPriceRange] = useState([0, maxPrice]);
+
   useEffect(() => {
     dispatch(fetchAllProducts());
     getCategories()
       .then((res) => setCategories(res.data.data || []))
       .catch((err) => console.log(err));
   }, [dispatch]);
+
+  useEffect(() => {
+    setPriceRange([0, maxPrice]);
+  }, [maxPrice]);
 
   const handleFilterChange = (catId, checked) => {
     if (checked) {
@@ -118,10 +182,22 @@ const IlanaGrocery = () => {
     setPage(1);
   };
 
+  const handlePriceChange = (newValue) => {
+    setPriceRange(newValue);
+    setPage(1);
+  };
+
   let filteredProducts =
     selectedCategories.length > 0
       ? allProduct.filter((p) => selectedCategories.includes(p.category?._id))
       : allProduct;
+
+  // فلترة حسب السعر
+  if (priceRange[0] > 0 || priceRange[1] < maxPrice) {
+    filteredProducts = filteredProducts.filter((p) => 
+      (p.price || 0) >= priceRange[0] && (p.price || 0) <= priceRange[1]
+    );
+  }
 
   if (searchTerm.trim() !== "") {
     filteredProducts = filteredProducts.filter((p) =>
@@ -195,6 +271,9 @@ const IlanaGrocery = () => {
             categories={categories}
             onFilterChange={handleFilterChange}
             selectedCategories={selectedCategories}
+            priceRange={priceRange}
+            onPriceChange={handlePriceChange}
+            maxPrice={maxPrice}
           />
         </Box>
 
@@ -243,6 +322,9 @@ const IlanaGrocery = () => {
     categories={categories}
     onFilterChange={handleFilterChange}
     selectedCategories={selectedCategories}
+    priceRange={priceRange}
+    onPriceChange={handlePriceChange}
+    maxPrice={maxPrice}
   />
 </Drawer>
 
