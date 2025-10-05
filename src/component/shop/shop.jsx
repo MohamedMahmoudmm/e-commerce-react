@@ -11,13 +11,17 @@ import {
   Drawer,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos"; // السهم للجنب
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import { fetchAllProducts, getCategories } from "../../redux/reducers/allProductReducer";
 import { useDispatch, useSelector } from "react-redux";
 import ProductCard from "../productCard/productCard";
 
 const Sidebar = ({ categories = [], onFilterChange, selectedCategories = [] }) => {
+  
+useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+}, []);
   const { translations } = useSelector((state) => state.language);
 
   return (
@@ -131,6 +135,7 @@ const IlanaGrocery = () => {
 
   const handlePageChange = (newPage) => {
     setPage(newPage);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   return (
